@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserRoleServiceIml implements IUserRoleService {
+public class UserRoleServiceImp implements IUserRoleService {
     @Autowired
     private UserRoleRepository userRoleRepository;
     @Autowired

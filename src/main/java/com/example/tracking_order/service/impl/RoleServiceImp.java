@@ -16,7 +16,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class RoleServiceIml implements IRoleService {
+public class RoleServiceImp implements IRoleService {
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
