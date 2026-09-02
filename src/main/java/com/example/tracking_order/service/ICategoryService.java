@@ -11,4 +11,5 @@ public interface ICategoryService {
     List<CategoryEntity> findAll();
     CategoryEntity update(UUID id, CategoryRequest category);
     void delete(UUID id);
+    CategoryEntity findById(UUID id);
 }

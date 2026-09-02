@@ -40,4 +40,8 @@ public class CategoryController {
         return BaseResponse.ofDeleteSuccess();
     }
 
+    @GetMapping("/{id}")
+    public BaseResponse<CategoryResponse> getCategory(@PathVariable UUID id){
+        return BaseResponse.ofSuccess(mapper.toCategoryResponse(service.findById(id)));
+    }
 }

@@ -52,4 +52,11 @@ public class CategoryServiceImp implements ICategoryService {
         category.setIsDeleted(true);
         repository.save(category);
     }
+
+    @Override
+    public CategoryEntity findById(UUID id) {
+        CategoryEntity category = repository.findById(id).orElseThrow(
+                ()-> new ResourceNotfoundException());
+        return category;
+    }
 }

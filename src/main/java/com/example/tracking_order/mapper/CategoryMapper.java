@@ -8,11 +8,10 @@ import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",uses = {ProductMapper.class})
 public interface CategoryMapper {
     CategoryEntity toCategoryEntity(CategoryRequest category);
     CategoryResponse toCategoryResponse(CategoryEntity category);
     CategoryEntity updateCategory(CategoryRequest request, @MappingTarget CategoryEntity entity);
-
     List<CategoryResponse> toCategoryResponseList(List<CategoryEntity> entities);
 }
