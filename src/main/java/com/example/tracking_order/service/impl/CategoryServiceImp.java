@@ -30,7 +30,7 @@ public class CategoryServiceImp implements ICategoryService {
 
     @Override
     public List<CategoryEntity> findAll() {
-        return repository.findAll();
+        return repository.findAllByIsDeletedFalse();
     }
 
     @Override
@@ -42,5 +42,14 @@ public class CategoryServiceImp implements ICategoryService {
         mapper.updateCategory(category, entity);
         repository.save(entity);
         return entity;
+    }
+
+    @Override
+    @Transactional
+    public void delete(UUID id) {
+        CategoryEntity category = repository.findById(id).orElseThrow(
+                ()-> new ResourceNotfoundException());
+        category.setIsDeleted(true);
+        repository.save(category);
     }
 }

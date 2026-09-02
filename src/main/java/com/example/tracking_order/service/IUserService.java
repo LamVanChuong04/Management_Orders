@@ -16,4 +16,5 @@ public interface IUserService {
     List<UserResponse> getAllUsers();
     UserEntity getUserById(UUID id);
     Page<UserResponse> getAllUsers(Pageable pageable);
+    void deleteUser(UUID id);
 }

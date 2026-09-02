@@ -10,4 +10,5 @@ public interface ICategoryService {
     CategoryEntity create(CategoryRequest category);
     List<CategoryEntity> findAll();
     CategoryEntity update(UUID id, CategoryRequest category);
+    void delete(UUID id);
 }

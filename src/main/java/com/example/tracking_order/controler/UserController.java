@@ -51,13 +51,19 @@ public class UserController {
 
     @GetMapping("/getallSort")
     public BaseResponse<List<UserResponse>> findAllUserAndSort(@RequestParam int size,
-                                                                @RequestParam int page,
+                                                               @RequestParam int page,
                                                                @RequestParam(defaultValue = "id") String sort,
                                                                @RequestParam(defaultValue = "desc") String direction) {
         Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sortBy = Sort.by(sortDirection, sort);
         Pageable pageable = PageRequest.of(page, size, sortBy);
         return BaseResponse.ofSuccess(service.getAllUsers(pageable));
+    }
+
+    @DeleteMapping("/{id}")
+    public BaseResponse<?> delete(@PathVariable UUID id) {
+        service.deleteUser(id);
+        return BaseResponse.ofDeleteSuccess();
     }
 
 }

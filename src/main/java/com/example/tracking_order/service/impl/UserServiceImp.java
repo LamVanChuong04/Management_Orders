@@ -59,4 +59,13 @@ public class UserServiceImp implements IUserService {
         return page.map(userMapper::userEntityToUserResp);
     }
 
+    @Override
+    @Transactional
+    public void deleteUser(UUID id) {
+        UserEntity user = userRespository.findById(id)
+                .orElseThrow(()-> new ResourceNotfoundException());
+        user.setIsDeleted(true);
+        userRespository.save(user);
+    }
+
 }
