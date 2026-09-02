@@ -1,0 +1,46 @@
+package com.example.tracking_order.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.type.SqlTypes;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Entity
+@Table(name = "warehouses")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class WarehouseEntity extends BaseEntity{
+    @Id
+    @JdbcTypeCode(SqlTypes.BINARY)
+    @Column(columnDefinition = "BINARY(16)")
+    @UuidGenerator
+    private UUID id;
+
+    @Column(nullable = false, length = 100)
+    private String name;
+
+    @Column(nullable = false, length = 50)
+    private String province;
+
+    @Column(nullable = false, length = 50)
+    private String district;
+
+    @Column(nullable = false, length = 50)
+    private String ward;
+
+    @Column(nullable = false, length = 150)
+    private String street;
+
+    @OneToMany(mappedBy = "warehouse")
+    private List<InventoryEntity> inventory = new ArrayList<>();
+}
