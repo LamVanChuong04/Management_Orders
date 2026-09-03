@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IRoleService {
-    RoleEntity createRole(RoleRequest role);
+    RoleResponse createRole(RoleRequest req);
     List<RoleResponse> getAllRoles();
-    String deleteRole(UUID id);
+    void deleteRole(UUID id);
 }

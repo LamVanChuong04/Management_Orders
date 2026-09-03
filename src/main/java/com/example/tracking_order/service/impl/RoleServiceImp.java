@@ -20,27 +20,27 @@ public class RoleServiceImp implements IRoleService {
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
-    private RoleMapper roleMapper;
+    private RoleMapper mapper;
 
     @Override
     @Transactional
-    public RoleEntity createRole(RoleRequest role) {
-        RoleEntity roleEntity = roleMapper.roleReqToEntity(role);
+    public RoleResponse createRole(RoleRequest role) {
+        RoleEntity roleEntity = mapper.roleReqToEntity(role);
         roleRepository.save(roleEntity);
-        return roleEntity;
+        return mapper.entityToResponse(roleEntity);
     }
 
     @Override
     public List<RoleResponse> getAllRoles() {
-        return roleRepository.findAll().stream().map(roleMapper::entityToResponse)
+        return roleRepository.findAll().stream().map(mapper::entityToResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public String deleteRole(UUID id) {
-        RoleEntity roleEntity = roleRepository.findById(id).orElseThrow(()-> new ResourceNotfoundException());
-        roleRepository.delete(roleEntity);
-        return "Deleted role with id = " + id;
+    public void deleteRole(UUID id) {
+        RoleEntity role = roleRepository.findById(id).orElseThrow(()-> new ResourceNotfoundException());
+        role.setIsDeleted(true);
+        roleRepository.save(role);
     }
 }

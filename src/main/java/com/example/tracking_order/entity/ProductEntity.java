@@ -9,6 +9,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductEntity extends BaseEntity{
+public class ProductEntity extends BaseEntity implements Serializable {
     @Id
     @JdbcTypeCode(SqlTypes.BINARY)
     @Column(columnDefinition = "BINARY(16)")

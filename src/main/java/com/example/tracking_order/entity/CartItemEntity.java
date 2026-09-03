@@ -9,6 +9,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Table(name = "cart_items")
@@ -17,7 +18,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CartItemEntity extends BaseEntity{
+public class CartItemEntity extends BaseEntity implements Serializable {
     @Id
     @JdbcTypeCode(SqlTypes.BINARY)
     @Column(columnDefinition = "BINARY(16)")

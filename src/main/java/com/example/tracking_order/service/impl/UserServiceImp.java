@@ -21,42 +21,42 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserServiceImp implements IUserService {
     private UserRespository userRespository;
-    private UserMapper userMapper;
+    private UserMapper mapper;
 
     @Override
-    public UserEntity createUser(UserRequest userRequest) {
-        UserEntity userEntity = userMapper.userDtoToUserEntity(userRequest);
+    public UserResponse createUser(UserRequest req) {
+        UserEntity userEntity = mapper.userDtoToUserEntity(req);
         userRespository.save(userEntity);
-        return userEntity;
+        return mapper.userEntityToUserResp(userEntity);
     }
 
     @Override
     @Transactional
-    public UserEntity updateUser(UserRequest userRequest, UUID userId) {
+    public UserResponse updateUser(UserRequest req, UUID userId) {
         UserEntity user = userRespository.findById(userId)
                 .orElseThrow(()-> new ResourceNotfoundException());
-        userMapper.updateUserFromDto(userRequest, user);
-
-        return userRespository.save(user);
+        mapper.updateUserFromDto(req, user);
+        userRespository.save(user);
+        return mapper.userEntityToUserResp(user);
     }
 
     @Override
     public List<UserResponse> getAllUsers() {
-        return userRespository.findAll().stream().map(userMapper::userEntityToUserResp)
+        return userRespository.findAll().stream().map(mapper::userEntityToUserResp)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public UserEntity getUserById(UUID id) {
+    public UserResponse getUserById(UUID id) {
         UserEntity user = userRespository.findById(id)
                 .orElseThrow(()-> new ResourceNotfoundException());
-        return user;
+        return mapper.userEntityToUserResp(user);
     }
 
     @Override
     public Page<UserResponse> getAllUsers(Pageable pageable) {
         Page<UserEntity> page = userRespository.findAll(pageable);
-        return page.map(userMapper::userEntityToUserResp);
+        return page.map(mapper::userEntityToUserResp);
     }
 
     @Override

@@ -13,25 +13,25 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/api/v1/category")
 @AllArgsConstructor
 public class CategoryController {
-    private ICategoryService service;
-    private CategoryMapper mapper;
+    private final ICategoryService service;
+
 
     @GetMapping()
     public BaseResponse<List<CategoryResponse>> getAllCategories(){
-        return BaseResponse.ofSuccess(mapper.toCategoryResponseList(service.findAll()));
+        return BaseResponse.ofSuccess(service.findAll());
     }
 
     @PostMapping()
     public BaseResponse<CategoryResponse> create(@Valid @RequestBody CategoryRequest category){
-        return BaseResponse.ofSuccess(mapper.toCategoryResponse(service.create(category)));
+        return BaseResponse.ofSuccess(service.create(category));
     }
 
     @PutMapping("/{id}")
     public BaseResponse<CategoryResponse> update(@PathVariable UUID id, @Valid @RequestBody CategoryRequest category){
-        return BaseResponse.ofSuccess(mapper.toCategoryResponse(service.update(id, category)));
+        return BaseResponse.ofSuccess(service.update(id, category));
     }
 
     @DeleteMapping("/{id}")
@@ -42,6 +42,6 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public BaseResponse<CategoryResponse> getCategory(@PathVariable UUID id){
-        return BaseResponse.ofSuccess(mapper.toCategoryResponse(service.findById(id)));
+        return BaseResponse.ofSuccess(service.findById(id));
     }
 }

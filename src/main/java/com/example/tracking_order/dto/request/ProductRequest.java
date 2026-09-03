@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Setter;
 
 import java.util.UUID;
 
@@ -21,6 +20,7 @@ public class ProductRequest {
     @NotBlank(message = "Description must not be blank")
     @Size(min = 3, max = 250)
     private String description;
+
     @NotNull(message = "Category must not be null")
     private UUID categoryId;
 }

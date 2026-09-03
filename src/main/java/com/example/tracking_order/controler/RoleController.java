@@ -18,21 +18,21 @@ import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api/v1/roles")
 public class RoleController {
-    private RoleMapper mapper;
-    private IRoleService service;
+    private final IRoleService service;
 
-    @PostMapping("/roles")
-    public BaseResponse<RoleResponse> create(@Valid @RequestBody RoleRequest roleRequest) {
-        return BaseResponse.ofSuccess(mapper.entityToResponse(service.createRole(roleRequest)));
+    @PostMapping()
+    public BaseResponse<RoleResponse> create(@Valid @RequestBody RoleRequest req) {
+        return BaseResponse.ofSuccess(service.createRole(req));
     }
 
-    @GetMapping("/roles")
+    @GetMapping()
     public BaseResponse<List<RoleResponse>> getAllRoles() {
         return BaseResponse.ofSuccess(service.getAllRoles());
     }
 
-    @DeleteMapping("roles/{id}")
+    @DeleteMapping("/{id}")
     public BaseResponse<String> delete(@PathVariable UUID id) {
         service.deleteRole(id);
         return BaseResponse.ofDeleteSuccess();

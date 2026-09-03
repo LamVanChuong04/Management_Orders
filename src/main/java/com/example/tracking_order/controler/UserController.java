@@ -18,20 +18,18 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
     @Autowired
     private IUserService service;
-    @Autowired
-    private UserMapper mapper;
 
     @PostMapping()
-    public BaseResponse<UserResponse> addUser(@Valid @RequestBody UserRequest userRequest) {
-        return BaseResponse.ofSuccess(mapper.userEntityToUserResp(service.createUser(userRequest)));
+    public BaseResponse<UserResponse> addUser(@Valid @RequestBody UserRequest req) {
+        return BaseResponse.ofSuccess(service.createUser(req));
     }
     @PutMapping("/{id}")
-    public BaseResponse<UserResponse> updateUser(@PathVariable UUID id, @Valid @RequestBody UserRequest userRequest) {
-        return BaseResponse.ofSuccess(mapper.userEntityToUserResp(service.updateUser(userRequest, id)));
+    public BaseResponse<UserResponse> updateUser(@PathVariable UUID id, @Valid @RequestBody UserRequest req) {
+        return BaseResponse.ofSuccess(service.updateUser(req, id));
     }
     @GetMapping()
     public BaseResponse<List<UserResponse>> findAllUsers() {
@@ -40,7 +38,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public BaseResponse<UserResponse> findUserById(@PathVariable UUID id) {
-        return BaseResponse.ofSuccess(mapper.userEntityToUserResp(service.getUserById(id)));
+        return BaseResponse.ofSuccess(service.getUserById(id));
     }
     @GetMapping("/getall")
     public BaseResponse<List<UserResponse>> findAllUser(@RequestParam int size,

@@ -11,10 +11,10 @@ import java.util.UUID;
 
 
 public interface IUserService {
-    UserEntity createUser(UserRequest userRequest);
-    UserEntity updateUser(UserRequest userRequest, UUID userId);
+    UserResponse createUser(UserRequest req);
+    UserResponse updateUser(UserRequest req, UUID userId);
     List<UserResponse> getAllUsers();
-    UserEntity getUserById(UUID id);
+    UserResponse getUserById(UUID id);
     Page<UserResponse> getAllUsers(Pageable pageable);
     void deleteUser(UUID id);
 }
