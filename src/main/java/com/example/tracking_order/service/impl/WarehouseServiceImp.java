@@ -1,8 +1,7 @@
 package com.example.tracking_order.service.impl;
 
-import com.example.tracking_order.dto.request.WarehouseRequest;
-import com.example.tracking_order.dto.response.WarehouseResponse;
-import com.example.tracking_order.entity.InventoryEntity;
+import com.example.tracking_order.dto.request.WarehouseReq;
+import com.example.tracking_order.dto.response.WarehouseRes;
 import com.example.tracking_order.entity.WarehouseEntity;
 import com.example.tracking_order.exception.ResourceNotfoundException;
 import com.example.tracking_order.mapper.WarehouseMapper;
@@ -12,12 +11,9 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -28,7 +24,7 @@ public class WarehouseServiceImp implements IWarehouseService {
 
     @Override
     @Transactional
-    public WarehouseResponse create(WarehouseRequest req) {
+    public WarehouseRes create(WarehouseReq req) {
         WarehouseEntity warehouse = mapper.fromCreate(req);
         repository.save(warehouse);
         return mapper.toResponse(warehouse);
@@ -45,7 +41,7 @@ public class WarehouseServiceImp implements IWarehouseService {
 
     @Override
     @Transactional
-    public WarehouseResponse update(UUID id, WarehouseRequest req) {
+    public WarehouseRes update(UUID id, WarehouseReq req) {
         WarehouseEntity warehouse = repository.findById(id)
                 .orElseThrow(()-> new ResourceNotfoundException());
         mapper.fromUpdate(req, warehouse);
@@ -54,13 +50,13 @@ public class WarehouseServiceImp implements IWarehouseService {
     }
 
     @Override
-    public Page<WarehouseResponse> findAll(Pageable  pageable) {
+    public Page<WarehouseRes> findAll(Pageable  pageable) {
         Page<WarehouseEntity> warehouse = repository.findByIsDeletedFalse(pageable);
         return warehouse.map(mapper::toResponse);
     }
 
     @Override
-    public WarehouseResponse findById(UUID id) {
+    public WarehouseRes findById(UUID id) {
         WarehouseEntity warehouse = repository.findById(id)
                 .orElseThrow(()-> new ResourceNotfoundException());
         return mapper.toResponse(warehouse);

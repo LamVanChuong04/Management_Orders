@@ -5,7 +5,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 @Data
-public class WarehouseRequest {
+public class WarehouseReq {
     @NotEmpty(message = "Warehouse name not empty")
     @Length(min = 3, max = 100, message = "Warehouse name must contain 3 characters")
     private String name;

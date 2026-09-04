@@ -1,9 +1,8 @@
 package com.example.tracking_order.controler;
 
-import com.example.tracking_order.dto.request.ProductRequest;
+import com.example.tracking_order.dto.request.ProductReq;
 import com.example.tracking_order.dto.response.BaseResponse;
-import com.example.tracking_order.dto.response.ProductResponse;
-import com.example.tracking_order.entity.ProductEntity;
+import com.example.tracking_order.dto.response.ProductRes;
 import com.example.tracking_order.mapper.ProductMapper;
 import com.example.tracking_order.service.IProductService;
 import jakarta.validation.Valid;
@@ -23,23 +22,23 @@ public class ProductController {
     private ProductMapper mapper;
 
     @GetMapping("/products")
-    public BaseResponse<List<ProductResponse>> findAll(@RequestParam int page,
-                                                       @RequestParam int size)
+    public BaseResponse<List<ProductRes>> findAll(@RequestParam int page,
+                                                  @RequestParam int size)
     {
         Pageable pageable = PageRequest.of(page, size);
         return BaseResponse.ofSuccess(service.findAll(pageable));
     }
 
     @PostMapping("/products")
-    public BaseResponse<ProductResponse> create(@Valid @RequestBody ProductRequest productRequest)
+    public BaseResponse<ProductRes> create(@Valid @RequestBody ProductReq productReq)
     {
-        return BaseResponse.ofSuccess(mapper.toProductResponse(service.create(productRequest)));
+        return BaseResponse.ofSuccess(mapper.toProductResponse(service.create(productReq)));
     }
 
     @PutMapping("/products/{id}")
-    public BaseResponse<ProductResponse> update(@PathVariable UUID id,
-                                                @Valid @RequestBody ProductRequest productRequest){
-        return BaseResponse.ofSuccess(mapper.toProductResponse(service.update(id, productRequest)));
+    public BaseResponse<ProductRes> update(@PathVariable UUID id,
+                                           @Valid @RequestBody ProductReq productReq){
+        return BaseResponse.ofSuccess(mapper.toProductResponse(service.update(id, productReq)));
     }
 
     @DeleteMapping("/products/{id}")

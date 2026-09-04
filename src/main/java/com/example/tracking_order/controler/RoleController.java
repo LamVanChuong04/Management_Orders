@@ -1,16 +1,11 @@
 package com.example.tracking_order.controler;
 
-import com.example.tracking_order.dto.request.RoleRequest;
+import com.example.tracking_order.dto.request.RoleReq;
 import com.example.tracking_order.dto.response.BaseResponse;
-import com.example.tracking_order.dto.response.RoleResponse;
-import com.example.tracking_order.mapper.RoleMapper;
-import com.example.tracking_order.mapper.UserRoleMapper;
+import com.example.tracking_order.dto.response.RoleRes;
 import com.example.tracking_order.service.IRoleService;
-import com.example.tracking_order.service.IUserRoleService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,12 +18,12 @@ public class RoleController {
     private final IRoleService service;
 
     @PostMapping()
-    public BaseResponse<RoleResponse> create(@Valid @RequestBody RoleRequest req) {
+    public BaseResponse<RoleRes> create(@Valid @RequestBody RoleReq req) {
         return BaseResponse.ofSuccess(service.createRole(req));
     }
 
     @GetMapping()
-    public BaseResponse<List<RoleResponse>> getAllRoles() {
+    public BaseResponse<List<RoleRes>> getAllRoles() {
         return BaseResponse.ofSuccess(service.getAllRoles());
     }
 

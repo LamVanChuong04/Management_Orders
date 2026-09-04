@@ -1,7 +1,7 @@
 package com.example.tracking_order.service.impl;
 
-import com.example.tracking_order.dto.request.InventoryRequest;
-import com.example.tracking_order.dto.response.InventoryResponse;
+import com.example.tracking_order.dto.request.InventoryReq;
+import com.example.tracking_order.dto.response.InventoryRes;
 import com.example.tracking_order.entity.InventoryEntity;
 import com.example.tracking_order.exception.ResourceNotfoundException;
 import com.example.tracking_order.mapper.InventoryMapper;
@@ -9,6 +9,8 @@ import com.example.tracking_order.repository.InventoryRepository;
 import com.example.tracking_order.service.IInventoryService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,26 +23,27 @@ public class InventoryServiceImp implements IInventoryService {
     private final InventoryMapper mapper;
 
     @Override
-    public List<InventoryResponse> getAllProductByWarehouseId(UUID id) {
-        return List.of();
+    public Page<InventoryRes> getAllProductByWarehouseId(UUID id, Pageable pageable) {
+        Page<InventoryEntity> list = repository.findByWarehouseId(id, pageable);
+        return list.map(mapper::toResponse);
     }
 
     @Override
     @Transactional
-    public InventoryResponse create(InventoryRequest req) {
-        InventoryEntity entity = mapper.toEntity(req);
+    public InventoryRes create(InventoryReq req) {
+        InventoryEntity entity = mapper.fromCreate(req);
         repository.save(entity);
         return mapper.toResponse(entity);
     }
 
     @Override
     @Transactional
-    public InventoryResponse update(UUID id,InventoryRequest request) {
+    public InventoryRes update(UUID id, InventoryReq request) {
         InventoryEntity inventory = repository.findById(id)
                 .orElseThrow(()-> new ResourceNotfoundException());
-        InventoryEntity entity = mapper.toEntity(request);
-        repository.save(entity);
-        return mapper.toResponse(entity);
+        mapper.update(request,inventory);
+        repository.save(inventory);
+        return mapper.toResponse(inventory);
     }
 
     @Override

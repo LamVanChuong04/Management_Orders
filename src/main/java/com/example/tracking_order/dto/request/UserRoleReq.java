@@ -1,7 +1,6 @@
 package com.example.tracking_order.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRoleRequest {
+public class UserRoleReq {
     @NotEmpty
     @Length(max = 36)
     private UUID userId;

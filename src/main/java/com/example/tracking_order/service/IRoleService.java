@@ -1,14 +1,13 @@
 package com.example.tracking_order.service;
 
-import com.example.tracking_order.dto.request.RoleRequest;
-import com.example.tracking_order.dto.response.RoleResponse;
-import com.example.tracking_order.entity.RoleEntity;
+import com.example.tracking_order.dto.request.RoleReq;
+import com.example.tracking_order.dto.response.RoleRes;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface IRoleService {
-    RoleResponse createRole(RoleRequest req);
-    List<RoleResponse> getAllRoles();
+    RoleRes createRole(RoleReq req);
+    List<RoleRes> getAllRoles();
     void deleteRole(UUID id);
 }

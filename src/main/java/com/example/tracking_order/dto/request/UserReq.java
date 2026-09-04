@@ -14,7 +14,7 @@ import org.hibernate.validator.constraints.Length;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRequest {
+public class UserReq {
     @NotEmpty
     @Length(min = 2, max = 20)
     @Pattern(

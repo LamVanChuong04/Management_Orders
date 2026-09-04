@@ -1,7 +1,7 @@
 package com.example.tracking_order.service.impl;
 
-import com.example.tracking_order.dto.request.UserRequest;
-import com.example.tracking_order.dto.response.UserResponse;
+import com.example.tracking_order.dto.request.UserReq;
+import com.example.tracking_order.dto.response.UserRes;
 import com.example.tracking_order.entity.UserEntity;
 import com.example.tracking_order.exception.ResourceNotfoundException;
 import com.example.tracking_order.mapper.UserMapper;
@@ -24,7 +24,7 @@ public class UserServiceImp implements IUserService {
     private UserMapper mapper;
 
     @Override
-    public UserResponse createUser(UserRequest req) {
+    public UserRes createUser(UserReq req) {
         UserEntity userEntity = mapper.userDtoToUserEntity(req);
         userRespository.save(userEntity);
         return mapper.userEntityToUserResp(userEntity);
@@ -32,7 +32,7 @@ public class UserServiceImp implements IUserService {
 
     @Override
     @Transactional
-    public UserResponse updateUser(UserRequest req, UUID userId) {
+    public UserRes updateUser(UserReq req, UUID userId) {
         UserEntity user = userRespository.findById(userId)
                 .orElseThrow(()-> new ResourceNotfoundException());
         mapper.updateUserFromDto(req, user);
@@ -41,20 +41,20 @@ public class UserServiceImp implements IUserService {
     }
 
     @Override
-    public List<UserResponse> getAllUsers() {
+    public List<UserRes> getAllUsers() {
         return userRespository.findAll().stream().map(mapper::userEntityToUserResp)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public UserResponse getUserById(UUID id) {
+    public UserRes getUserById(UUID id) {
         UserEntity user = userRespository.findById(id)
                 .orElseThrow(()-> new ResourceNotfoundException());
         return mapper.userEntityToUserResp(user);
     }
 
     @Override
-    public Page<UserResponse> getAllUsers(Pageable pageable) {
+    public Page<UserRes> getAllUsers(Pageable pageable) {
         Page<UserEntity> page = userRespository.findAll(pageable);
         return page.map(mapper::userEntityToUserResp);
     }

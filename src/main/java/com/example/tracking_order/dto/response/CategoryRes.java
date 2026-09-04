@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-public class CategoryResponse {
+public class CategoryRes {
     private UUID id;
     private String name;
     private String parentId;
-    private List<ProductResponse> products;
+    private List<ProductRes> products;
 }

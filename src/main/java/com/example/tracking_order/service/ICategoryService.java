@@ -1,16 +1,15 @@
 package com.example.tracking_order.service;
 
-import com.example.tracking_order.dto.request.CategoryRequest;
-import com.example.tracking_order.dto.response.CategoryResponse;
-import com.example.tracking_order.entity.CategoryEntity;
+import com.example.tracking_order.dto.request.CategoryReq;
+import com.example.tracking_order.dto.response.CategoryRes;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface ICategoryService {
-    CategoryResponse create(CategoryRequest category);
-    List<CategoryResponse> findAll();
-    CategoryResponse update(UUID id, CategoryRequest category);
+    CategoryRes create(CategoryReq category);
+    List<CategoryRes> findAll();
+    CategoryRes update(UUID id, CategoryReq category);
     void delete(UUID id);
-    CategoryResponse findById(UUID id);
+    CategoryRes findById(UUID id);
 }

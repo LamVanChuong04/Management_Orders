@@ -1,14 +1,13 @@
 package com.example.tracking_order.service.impl;
 
-import com.example.tracking_order.dto.request.ProductRequest;
-import com.example.tracking_order.dto.response.ProductResponse;
+import com.example.tracking_order.dto.request.ProductReq;
+import com.example.tracking_order.dto.response.ProductRes;
 import com.example.tracking_order.entity.CategoryEntity;
 import com.example.tracking_order.entity.ProductEntity;
 import com.example.tracking_order.exception.ResourceNotfoundException;
 import com.example.tracking_order.mapper.ProductMapper;
 import com.example.tracking_order.repository.CategoryRepository;
 import com.example.tracking_order.repository.ProductRepository;
-import com.example.tracking_order.service.ICategoryService;
 import com.example.tracking_order.service.IProductService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -30,7 +29,7 @@ public class ProductSericeImp implements IProductService {
 
     @Override
     @Transactional
-    public ProductEntity create(ProductRequest request) {
+    public ProductEntity create(ProductReq request) {
         CategoryEntity category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(()-> new ResourceNotfoundException());
         ProductEntity entity = mapper.toProductEntity(request);
@@ -41,7 +40,7 @@ public class ProductSericeImp implements IProductService {
 
     @Override
     @Transactional
-    public ProductEntity update(UUID id, ProductRequest request) {
+    public ProductEntity update(UUID id, ProductReq request) {
         ProductEntity entity = productRepository.findById(id)
                 .orElseThrow(()->new ResourceNotfoundException());
         mapper.updateProduct(request, entity);
@@ -59,13 +58,13 @@ public class ProductSericeImp implements IProductService {
     }
 
     @Override
-    public List<ProductResponse> findAll() {
+    public List<ProductRes> findAll() {
         return productRepository.findByIsDeletedFalse().stream().map(mapper::toProductResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Page<ProductResponse> findAll(Pageable pageable) {
+    public Page<ProductRes> findAll(Pageable pageable) {
         Page<ProductEntity> page = productRepository.findByIsDeletedFalse(pageable);
         return page.map(mapper::toProductResponse);
     }

@@ -30,6 +30,14 @@ public class ProductVariantEntity extends BaseEntity implements Serializable {
 
     @Column(nullable = false, name = "product_variant_price")
     private BigDecimal price;
+    @Column(nullable = false)
+    private String imageUrl;
+    @Column(nullable = false, length = 50)
+    private String color;
+    @Column(nullable = false, length = 3)
+    private String size;
+    @Column(nullable = false, length = 10)
+    private String weight;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)

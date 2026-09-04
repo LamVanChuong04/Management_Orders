@@ -37,8 +37,6 @@ public class DiscountEntity extends BaseEntity implements Serializable {
     @Column(nullable = false, length = 250)
     private String description;
 
-    @Column(nullable = false, length = 30)
-    private String code;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -59,4 +57,7 @@ public class DiscountEntity extends BaseEntity implements Serializable {
 
     @OneToMany(mappedBy = "discount")
     private List<UserOfDiscounteEntity> userOfDiscounts = new ArrayList<>();
+
+    @Column(nullable = false)
+    private Integer quantiy;
 }

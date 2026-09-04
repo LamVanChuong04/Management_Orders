@@ -1,7 +1,7 @@
 package com.example.tracking_order.service;
 
-import com.example.tracking_order.dto.request.UserRoleRequest;
+import com.example.tracking_order.dto.request.UserRoleReq;
 
 public interface IUserRoleService {
-    void createUserRole(UserRoleRequest userRoleRequest);
+    void createUserRole(UserRoleReq userRoleReq);
 }

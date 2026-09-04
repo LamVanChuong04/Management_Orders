@@ -1,7 +1,7 @@
 package com.example.tracking_order.service.impl;
 
-import com.example.tracking_order.dto.request.RoleRequest;
-import com.example.tracking_order.dto.response.RoleResponse;
+import com.example.tracking_order.dto.request.RoleReq;
+import com.example.tracking_order.dto.response.RoleRes;
 import com.example.tracking_order.entity.RoleEntity;
 import com.example.tracking_order.exception.ResourceNotfoundException;
 import com.example.tracking_order.mapper.RoleMapper;
@@ -24,14 +24,14 @@ public class RoleServiceImp implements IRoleService {
 
     @Override
     @Transactional
-    public RoleResponse createRole(RoleRequest role) {
+    public RoleRes createRole(RoleReq role) {
         RoleEntity roleEntity = mapper.roleReqToEntity(role);
         roleRepository.save(roleEntity);
         return mapper.entityToResponse(roleEntity);
     }
 
     @Override
-    public List<RoleResponse> getAllRoles() {
+    public List<RoleRes> getAllRoles() {
         return roleRepository.findAll().stream().map(mapper::entityToResponse)
                 .collect(Collectors.toList());
     }

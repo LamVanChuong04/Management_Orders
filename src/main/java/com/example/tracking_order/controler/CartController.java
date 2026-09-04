@@ -1,8 +1,8 @@
 package com.example.tracking_order.controler;
 
-import com.example.tracking_order.dto.request.CartRequest;
+import com.example.tracking_order.dto.request.CartReq;
 import com.example.tracking_order.dto.response.BaseResponse;
-import com.example.tracking_order.dto.response.CartResponse;
+import com.example.tracking_order.dto.response.CartRes;
 import com.example.tracking_order.service.ICartService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,7 @@ public class CartController {
     private final ICartService service;
 
     @PostMapping()
-    public BaseResponse<CartResponse> create(@RequestBody @Valid CartRequest req) {
+    public BaseResponse<CartRes> create(@RequestBody @Valid CartReq req) {
         return BaseResponse.ofSuccess(service.create(req));
     }
 }

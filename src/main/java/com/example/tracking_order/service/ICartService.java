@@ -1,8 +1,8 @@
 package com.example.tracking_order.service;
 
-import com.example.tracking_order.dto.request.CartRequest;
-import com.example.tracking_order.dto.response.CartResponse;
+import com.example.tracking_order.dto.request.CartReq;
+import com.example.tracking_order.dto.response.CartRes;
 
 public interface ICartService {
-    CartResponse create(CartRequest req);
+    CartRes create(CartReq req);
 }

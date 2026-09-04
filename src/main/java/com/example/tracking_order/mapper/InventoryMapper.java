@@ -1,17 +1,21 @@
 package com.example.tracking_order.mapper;
 
-import com.example.tracking_order.dto.request.InventoryRequest;
-import com.example.tracking_order.dto.response.InventoryResponse;
+import com.example.tracking_order.dto.request.InventoryReq;
+import com.example.tracking_order.dto.response.InventoryRes;
 import com.example.tracking_order.entity.InventoryEntity;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface InventoryMapper {
-    InventoryEntity toEntity(InventoryRequest req);
-    InventoryResponse toResponse(InventoryEntity entity);
-    void update(InventoryRequest req, @MappingTarget InventoryEntity entity);
-    List<InventoryResponse> toResponseList(List<InventoryEntity> list);
+    @Mapping(source = "warehouseId", target = "warehouse.id")
+    @Mapping(source = "productVariantId", target = "productVariant.id")
+    InventoryEntity fromCreate(InventoryReq req);
+    @Mapping(source = "productVariant.id", target = "productVariantId")
+    InventoryRes toResponse(InventoryEntity entity);
+    InventoryEntity update(InventoryReq req, @MappingTarget InventoryEntity entity);
+    List<InventoryRes> toResponseList(List<InventoryEntity> list);
 }

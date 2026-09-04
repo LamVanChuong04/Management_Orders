@@ -1,7 +1,7 @@
 package com.example.tracking_order.service.impl;
 
-import com.example.tracking_order.dto.request.CategoryRequest;
-import com.example.tracking_order.dto.response.CategoryResponse;
+import com.example.tracking_order.dto.request.CategoryReq;
+import com.example.tracking_order.dto.response.CategoryRes;
 import com.example.tracking_order.entity.CategoryEntity;
 import com.example.tracking_order.exception.ResourceNotfoundException;
 import com.example.tracking_order.mapper.CategoryMapper;
@@ -24,21 +24,21 @@ public class CategoryServiceImp implements ICategoryService {
 
     @Override
     @Transactional
-    public CategoryResponse create(CategoryRequest category) {
+    public CategoryRes create(CategoryReq category) {
         CategoryEntity categoryEntity = mapper.toCategoryEntity(category);
         repository.save(categoryEntity);
         return mapper.toCategoryResponse(categoryEntity);
     }
 
     @Override
-    public List<CategoryResponse> findAll() {
+    public List<CategoryRes> findAll() {
         return repository.findAllByIsDeletedFalse().stream()
                 .map(mapper::toCategoryResponse).collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public CategoryResponse update(UUID id, CategoryRequest category) {
+    public CategoryRes update(UUID id, CategoryReq category) {
         CategoryEntity entity = repository.findById(id).orElseThrow(
                 ()-> new ResourceNotfoundException()
         );
@@ -57,7 +57,7 @@ public class CategoryServiceImp implements ICategoryService {
     }
 
     @Override
-    public CategoryResponse findById(UUID id) {
+    public CategoryRes findById(UUID id) {
         CategoryEntity category = repository.findById(id).orElseThrow(
                 ()-> new ResourceNotfoundException());
         return mapper.toCategoryResponse(category);

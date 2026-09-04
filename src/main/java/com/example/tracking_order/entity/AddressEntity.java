@@ -37,7 +37,7 @@ public class AddressEntity extends BaseEntity implements Serializable {
     @Column(nullable = false, length = 150)
     private String street;
 
-    private Boolean isDefault = true;
+    private Boolean isDefault;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

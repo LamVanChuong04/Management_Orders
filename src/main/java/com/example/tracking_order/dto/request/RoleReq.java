@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleRequest {
+public class RoleReq {
     @NotEmpty
     @Length(min = 2, max = 20)
     @Pattern(

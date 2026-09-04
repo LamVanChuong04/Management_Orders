@@ -1,6 +1,6 @@
 package com.example.tracking_order.service.impl;
 
-import com.example.tracking_order.dto.request.UserRoleRequest;
+import com.example.tracking_order.dto.request.UserRoleReq;
 import com.example.tracking_order.entity.UserRoleEntity;
 import com.example.tracking_order.mapper.UserRoleMapper;
 import com.example.tracking_order.repository.UserRoleRepository;
@@ -18,8 +18,8 @@ public class UserRoleServiceImp implements IUserRoleService {
 
     @Override
     @Transactional
-    public void createUserRole(UserRoleRequest userRoleRequest) {
-        UserRoleEntity userRole = userRoleMapper.toUserRoleRequest(userRoleRequest);
+    public void createUserRole(UserRoleReq userRoleReq) {
+        UserRoleEntity userRole = userRoleMapper.toUserRoleRequest(userRoleReq);
         userRoleRepository.save(userRole);
     }
 }

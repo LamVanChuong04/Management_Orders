@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class ProductRequest {
+public class ProductReq {
     @NotEmpty(message = "Product name must not be empty")
     @Size(min = 3, max = 150)
     private String productName;

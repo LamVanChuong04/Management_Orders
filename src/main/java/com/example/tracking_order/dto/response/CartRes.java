@@ -2,7 +2,8 @@ package com.example.tracking_order.dto.response;
 
 import lombok.Data;
 
+import java.util.UUID;
 @Data
-public class RoleResponse {
-    private String name;
+public class CartRes {
+    private UUID userId;
 }
