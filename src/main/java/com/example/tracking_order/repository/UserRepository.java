@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 @Repository
-public interface UserRespository extends JpaRepository<UserEntity, UUID> {
+public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     Optional<UserEntity> findById(UUID id);
     // page: kết quả return
     // pageable: input (size, page)
@@ -22,5 +22,7 @@ public interface UserRespository extends JpaRepository<UserEntity, UUID> {
     @Query("select u from UserEntity u where u.isDeleted = false")
     List<UserEntity> findAll();
 
+    Optional<UserEntity> findByEmail(String email);
+    UserEntity findByUsername(String username);
 
 }

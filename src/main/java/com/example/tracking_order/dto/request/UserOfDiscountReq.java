@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class UsrOfDiscountReq {
+public class UserOfDiscountReq {
     @NotNull
     private UUID userId;
     @NotNull

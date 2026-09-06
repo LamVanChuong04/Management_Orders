@@ -1,5 +1,8 @@
 package com.example.tracking_order.entity;
 
+import com.example.tracking_order.common.BaseEntity;
+import com.example.tracking_order.enums.Gender;
+import com.example.tracking_order.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,6 +39,14 @@ public class UserEntity extends BaseEntity implements Serializable {
 
     @Column(name = "email", nullable = false)
     private String email;
+    @Column(nullable = false)
+    private String username;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Gender gender;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_role", nullable = false)
+    private Role role;
 
     @Column(name = "password", nullable = false)
     private String password;
@@ -50,13 +61,12 @@ public class UserEntity extends BaseEntity implements Serializable {
     private CartEntity cart;
 
     @OneToMany(mappedBy = "user")
-    private List<UserRoleEntity> userRole = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
     private List<AddressEntity> address = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<OrderEntity> order = new ArrayList<>();
+
+
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserOfDiscounteEntity>  userOfDiscounts = new ArrayList<>();

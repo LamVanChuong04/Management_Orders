@@ -1,5 +1,6 @@
 package com.example.tracking_order.entity;
 
+import com.example.tracking_order.common.BaseEntity;
 import com.example.tracking_order.enums.OrderStatus;
 import com.example.tracking_order.enums.PaymentMethod;
 import com.example.tracking_order.enums.PaymentStatus;

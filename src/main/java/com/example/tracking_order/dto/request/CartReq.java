@@ -11,6 +11,7 @@ import java.util.UUID;
 @Setter
 @Getter
 public class CartReq {
-    @NotNull(message = "Product id must not be null")
     private UUID userId;
+    private UUID productVariantId;
+    private Integer quantity;
 }

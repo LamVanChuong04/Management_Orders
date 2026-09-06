@@ -1,11 +1,13 @@
 package com.example.tracking_order.controler;
 
 import com.example.tracking_order.dto.request.CategoryReq;
-import com.example.tracking_order.dto.response.BaseResponse;
+import com.example.tracking_order.common.BaseResponse;
 import com.example.tracking_order.dto.response.CategoryRes;
 import com.example.tracking_order.service.ICategoryService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,28 +21,28 @@ public class CategoryController {
 
 
     @GetMapping()
-    public BaseResponse<List<CategoryRes>> getAllCategories(){
-        return BaseResponse.ofSuccess(service.findAll());
+    public ResponseEntity<BaseResponse<List<CategoryRes>>> getAllCategories(){
+        return new ResponseEntity<>(BaseResponse.ofSuccess(service.findAll()), HttpStatus.OK);
     }
 
     @PostMapping()
-    public BaseResponse<CategoryRes> create(@Valid @RequestBody CategoryReq category){
-        return BaseResponse.ofSuccess(service.create(category));
+    public ResponseEntity<BaseResponse<CategoryRes>> create(@Valid @RequestBody CategoryReq category){
+        return new ResponseEntity<>(BaseResponse.ofSuccess(service.create(category)), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public BaseResponse<CategoryRes> update(@PathVariable UUID id, @Valid @RequestBody CategoryReq category){
-        return BaseResponse.ofSuccess(service.update(id, category));
+    public ResponseEntity<BaseResponse<CategoryRes>> update(@PathVariable UUID id, @Valid @RequestBody CategoryReq category){
+        return new ResponseEntity<>(BaseResponse.ofSuccess(service.update(id, category)), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public BaseResponse<?> delete(@PathVariable UUID id){
+    public ResponseEntity<BaseResponse<?>> delete(@PathVariable UUID id){
         service.delete(id);
-        return BaseResponse.ofDeleteSuccess();
+        return new ResponseEntity<>(BaseResponse.ofDeleteSuccess(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public BaseResponse<CategoryRes> getCategory(@PathVariable UUID id){
-        return BaseResponse.ofSuccess(service.findById(id));
+    public ResponseEntity<BaseResponse<CategoryRes>> getCategory(@PathVariable UUID id){
+        return new ResponseEntity<>(BaseResponse.ofSuccess(service.findById(id)), HttpStatus.OK);
     }
 }

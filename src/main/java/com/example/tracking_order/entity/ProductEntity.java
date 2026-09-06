@@ -1,5 +1,6 @@
 package com.example.tracking_order.entity;
 
+import com.example.tracking_order.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

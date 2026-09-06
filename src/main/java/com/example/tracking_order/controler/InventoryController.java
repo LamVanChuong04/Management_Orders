@@ -1,11 +1,13 @@
 package com.example.tracking_order.controler;
 
 import com.example.tracking_order.dto.request.InventoryReq;
-import com.example.tracking_order.dto.response.BaseResponse;
+import com.example.tracking_order.common.BaseResponse;
 import com.example.tracking_order.dto.response.InventoryRes;
 import com.example.tracking_order.service.IInventoryService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -17,19 +19,19 @@ public class InventoryController {
     private final IInventoryService service;
 
     @PostMapping()
-    public BaseResponse<InventoryRes> create(@RequestBody @Valid InventoryReq req) {
-        return BaseResponse.ofSuccess(service.create(req));
+    public ResponseEntity<BaseResponse<InventoryRes>> create(@RequestBody @Valid InventoryReq req) {
+        return new ResponseEntity<>(BaseResponse.ofSuccess(service.create(req)), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public BaseResponse<InventoryRes> update(@PathVariable UUID id,
+    public  ResponseEntity<BaseResponse<InventoryRes>> update(@PathVariable UUID id,
                                              @RequestBody @Valid InventoryReq req) {
-        return BaseResponse.ofSuccess(service.update(id, req));
+        return new ResponseEntity<>(BaseResponse.ofSuccess(service.update(id, req)), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public BaseResponse<?> delete(@PathVariable UUID id) {
+    public  ResponseEntity<BaseResponse<?>> delete(@PathVariable UUID id) {
         service.delete(id);
-        return BaseResponse.ofDeleteSuccess();
+        return new ResponseEntity<>(BaseResponse.ofDeleteSuccess(),  HttpStatus.OK);
     }
 }

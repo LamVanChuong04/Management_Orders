@@ -42,4 +42,10 @@ public class DiscountServiceImp implements IDiscountService {
         List<DiscountEntity> discounts = repo.findAll();
         return discounts.stream().map(mapper::toResponse).collect(Collectors.toList());
     }
+
+    @Override
+    public List<DiscountRes> findAllByUserId(UUID id) {
+        List<DiscountEntity> discounts = repo.findAllByUserId(id);
+        return discounts.stream().map(mapper::toResponse).collect(Collectors.toList());
+    }
 }

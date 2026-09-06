@@ -1,5 +1,6 @@
 package com.example.tracking_order.dto.request;
 
+import com.example.tracking_order.enums.Gender;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -22,6 +23,22 @@ public class UserReq {
             message = "First name must contain only letters and be 2-20 characters long"
     )
     private String firstName;
+
+    @NotEmpty
+    @Length(min = 5, max = 20)
+    @Pattern(
+            regexp = "^[A-Za-z0-9]+$",
+            message = "Username must contain only letters and be 5-20 characters long"
+    )
+    private String userName;
+
+    //@NotEmpty(message = "Gender must not empty")
+//    @Length(min = 4, max = 5)
+//    @Pattern(
+//            regexp = "^[A-Za-z0-9]+$",
+//            message = "Username must contain only letters and be 5-20 characters long"
+//    )
+    private Gender gender;
     @NotEmpty
     @Length(min = 2, max = 20)
     @Pattern(

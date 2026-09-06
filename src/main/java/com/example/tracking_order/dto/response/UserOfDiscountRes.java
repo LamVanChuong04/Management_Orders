@@ -2,11 +2,9 @@ package com.example.tracking_order.dto.response;
 
 import lombok.Data;
 
-import java.util.List;
 import java.util.UUID;
 @Data
-public class CartRes {
+public class UserOfDiscountRes {
+    private UUID discountId;
     private UUID userId;
-    private UUID cartId;
-    private List<CartItemRes> items;
 }

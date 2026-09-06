@@ -1,9 +1,10 @@
 package com.example.tracking_order.exception;
 
-import com.example.tracking_order.dto.response.BaseResponse;
+import com.example.tracking_order.common.BaseResponse;
 import com.example.tracking_order.dto.response.FieldViolation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -46,6 +47,22 @@ public class GlobalExceptionHandler {
         response.getMeta().setCode(HttpStatus.BAD_REQUEST.value());
         response.getMeta().setMessage("Path variable validation failed");
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<BaseResponse<Object>> handleBusinessException(BusinessException ex) {
+        BaseResponse<Object> response = new BaseResponse<>();
+        response.getMeta().setCode(HttpStatus.BAD_REQUEST.value());
+        response.getMeta().setMessage(ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<BaseResponse<Object>> handleAuthorizationDeniedException(AuthorizationDeniedException ex) {
+        BaseResponse<Object> response = new BaseResponse<>();
+        response.getMeta().setCode(HttpStatus.FORBIDDEN.value());
+        response.getMeta().setMessage("Access Denied");
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
 }

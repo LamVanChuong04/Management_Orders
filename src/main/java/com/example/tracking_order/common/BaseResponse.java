@@ -1,5 +1,6 @@
-package com.example.tracking_order.dto.response;
+package com.example.tracking_order.common;
 
+import com.example.tracking_order.dto.response.FieldViolation;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;

@@ -1,5 +1,6 @@
 package com.example.tracking_order.entity;
 
+import com.example.tracking_order.common.BaseEntity;
 import com.example.tracking_order.enums.DiscountStatus;
 import com.example.tracking_order.enums.DiscountType;
 import jakarta.persistence.*;

@@ -1,5 +1,6 @@
 package com.example.tracking_order.service;
 
+import com.example.tracking_order.dto.request.ChangePassReq;
 import com.example.tracking_order.dto.request.UserReq;
 import com.example.tracking_order.dto.response.UserRes;
 import org.springframework.data.domain.Page;
@@ -16,4 +17,5 @@ public interface IUserService {
     UserRes getUserById(UUID id);
     Page<UserRes> getAllUsers(Pageable pageable);
     void deleteUser(UUID id);
+    String changePassword(ChangePassReq req);
 }

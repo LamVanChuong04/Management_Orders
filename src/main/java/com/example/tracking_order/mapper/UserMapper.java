@@ -9,7 +9,9 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
+    @Mapping(source = "userName", target = "username")
     UserEntity userDtoToUserEntity(UserReq userReq);
+    @Mapping(source = "username", target = "userName")
     @Mapping(target = "fullName", expression = "java(userEntity.getLastName() + \" \" + userEntity.getFirstName())")
     UserRes userEntityToUserResp(UserEntity userEntity);
 
