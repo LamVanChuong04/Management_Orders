@@ -12,8 +12,8 @@ public interface ICartItemService {
     CartItemRes create(CartItemReq req);
     CartItemRes update(UUID id, CartItemReq req);
     List<CartItemRes> toResponseList(List<CartItemEntity> reqs);
-    CartItemRes updateQuantity(UUID cartItemId, UpdateQuantityRequest reqy);
-
+    CartItemRes updateQuantity(UUID userId, UpdateQuantityRequest reqy);
+    //void delete(UUID itemId);
 
     //void deleteById(UUID id);
 }

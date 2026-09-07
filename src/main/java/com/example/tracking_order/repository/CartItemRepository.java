@@ -20,5 +20,6 @@ public interface CartItemRepository extends JpaRepository<CartItemEntity, UUID> 
     """)
     Optional<CartItemEntity> findByIdAndCartUserId(UUID cartItemId, UUID userId);
     Optional<CartItemEntity> findByCartIdAndProductVariantId(UUID cartId, UUID productVariantId);
+    Optional<CartItemEntity> findByCartId(UUID cartId);
 }
 

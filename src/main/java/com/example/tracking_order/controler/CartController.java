@@ -22,7 +22,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/carts")
 @AllArgsConstructor
-@Tag(name = "User Controller")
+@Tag(name = "Cart Controller")
 public class CartController {
     private final ICartService service;
     // lấy chi tiết giỏ hàng theo userId

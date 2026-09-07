@@ -12,5 +12,5 @@ public class UpdateQuantityRequest {
     @PositiveOrZero(message = "Số lượng phải lớn hơn hoặc bằng 0")
     private Integer quantity;
 
-    private UUID userId;
+    private UUID cartId;
 }

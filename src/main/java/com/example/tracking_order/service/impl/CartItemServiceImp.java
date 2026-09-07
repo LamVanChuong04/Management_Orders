@@ -6,6 +6,7 @@ import com.example.tracking_order.dto.response.CartItemRes;
 import com.example.tracking_order.entity.CartItemEntity;
 import com.example.tracking_order.entity.InventoryEntity;
 import com.example.tracking_order.entity.ProductVariantEntity;
+import com.example.tracking_order.exception.BusinessException;
 import com.example.tracking_order.exception.ResourceNotfoundException;
 import com.example.tracking_order.mapper.CartItemMapper;
 import com.example.tracking_order.repository.CartItemRepository;
@@ -56,8 +57,8 @@ public class CartItemServiceImp implements ICartItemService {
 
     @Override
     @Transactional
-    public CartItemRes updateQuantity(UUID cartItemId, UpdateQuantityRequest req) {
-        CartItemEntity entity = repo.findByIdAndCartUserId(cartItemId, req.getUserId())
+    public CartItemRes updateQuantity(UUID userId, UpdateQuantityRequest req) {
+        CartItemEntity entity = repo.findByIdAndCartUserId(req.getCartId(), userId)
                 .orElseThrow(()-> new ResourceNotfoundException());
         Integer newQuantity = req.getQuantity();
         // check quantity -> xóa khỏi cartItem
@@ -67,7 +68,8 @@ public class CartItemServiceImp implements ICartItemService {
         }
         // kiem tra so luong ton kho
         UUID variantId = entity.getProductVariant().getId();
-        InventoryEntity inventory = irepo.findByProductVariantId(variantId).orElseThrow(()-> new ResourceNotfoundException());
+        InventoryEntity inventory = irepo.findByProductVariantId(variantId)
+                .orElseThrow(()-> new ResourceNotfoundException());
         if(inventory.getQuantityInStock() < newQuantity){
             throw new RuntimeException("Số lượng tồn kho không đủ (Chỉ còn "
                     + inventory.getQuantityInStock() + " sản phẩm khả dụng)");
