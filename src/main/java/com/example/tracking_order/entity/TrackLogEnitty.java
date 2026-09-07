@@ -30,10 +30,18 @@ public class TrackLogEnitty extends BaseEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "old_status_order")
     private OrderStatus oldStatus;
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "new_status_order")
     private OrderStatus newStatus;
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
     private OrderEntity order;
+
+    @Column(nullable = false, length = 30)
+    private String trackNumber;
+
+    public TrackLogEnitty(OrderStatus orderStatus, OrderStatus orderStatus1, OrderEntity order, String trackNumber) {
+        super();
+    }
 }

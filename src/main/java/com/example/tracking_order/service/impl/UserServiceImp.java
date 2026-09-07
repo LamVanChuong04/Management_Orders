@@ -49,6 +49,7 @@ public class UserServiceImp implements IUserService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(()-> new ResourceNotfoundException());
         mapper.updateUserFromDto(req, user);
+        user.setPassword(encoder.encode(req.getPassword()));
         userRepository.save(user);
         return mapper.userEntityToUserResp(user);
     }

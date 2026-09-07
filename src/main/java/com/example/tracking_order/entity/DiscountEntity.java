@@ -32,6 +32,12 @@ public class DiscountEntity extends BaseEntity implements Serializable {
     @UuidGenerator
     private UUID id;
 
+    @Column(columnDefinition = "BINARY(16)")
+    @UuidGenerator
+    private UUID shopId;
+
+    private String code;
+
     @Column(nullable = false, length = 150)
     private String name;
 
@@ -60,5 +66,5 @@ public class DiscountEntity extends BaseEntity implements Serializable {
     private List<UserOfDiscounteEntity> userOfDiscounts = new ArrayList<>();
 
     @Column(nullable = false)
-    private Integer quantiy;
+    private Integer quantity;
 }

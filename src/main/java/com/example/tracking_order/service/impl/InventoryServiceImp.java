@@ -3,6 +3,7 @@ package com.example.tracking_order.service.impl;
 import com.example.tracking_order.dto.request.InventoryReq;
 import com.example.tracking_order.dto.response.InventoryRes;
 import com.example.tracking_order.entity.InventoryEntity;
+import com.example.tracking_order.exception.BusinessException;
 import com.example.tracking_order.exception.ResourceNotfoundException;
 import com.example.tracking_order.mapper.InventoryMapper;
 import com.example.tracking_order.repository.InventoryRepository;
@@ -51,6 +52,23 @@ public class InventoryServiceImp implements IInventoryService {
         InventoryEntity inventory = repository.findById(id)
                 .orElseThrow(()-> new ResourceNotfoundException());
         inventory.setIsDeleted(true);
+        repository.save(inventory);
+    }
+    @Override
+    @Transactional
+    public void updateStock(UUID varianId, Integer buyQuantity) {
+        InventoryEntity entity = new InventoryEntity();
+        InventoryEntity inventory = repository.findByProductVariantId(varianId)
+                .orElseThrow(()-> new BusinessException("Khong tin thay san pham trong kho"));
+        // check quantity
+        Long stock = inventory.getQuantityInStock();
+        if(stock < buyQuantity)
+        {
+            throw new BusinessException("San pham trong kho khong du dap ung.");
+        }else {
+            stock = inventory.getQuantityInStock() - buyQuantity;
+        }
+        entity.setQuantityInStock(stock);
         repository.save(inventory);
     }
 }

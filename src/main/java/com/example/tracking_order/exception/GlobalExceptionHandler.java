@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,8 +62,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BaseResponse<Object>> handleAuthorizationDeniedException(AuthorizationDeniedException ex) {
         BaseResponse<Object> response = new BaseResponse<>();
         response.getMeta().setCode(HttpStatus.FORBIDDEN.value());
-        response.getMeta().setMessage("Access Denied");
+        response.getMeta().setMessage("Access Denied,");
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<BaseResponse<Object>> handleNoResourceFoundException(NoResourceFoundException ex) {
+        BaseResponse<Object> response = new BaseResponse<>();
+        response.getMeta().setCode(HttpStatus.NOT_FOUND.value());
+        response.getMeta().setMessage(ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
 }

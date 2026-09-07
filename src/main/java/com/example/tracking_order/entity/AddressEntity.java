@@ -11,6 +11,8 @@ import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -38,13 +40,15 @@ public class AddressEntity extends BaseEntity implements Serializable {
     @Column(nullable = false, length = 150)
     private String street;
 
+    @Column(name = "is_default", nullable = false)
     private Boolean isDefault;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @OneToOne(mappedBy = "address")
-    private OrderEntity order;
+    @OneToMany(mappedBy = "address")
+    private List<OrderEntity> order = new ArrayList<>();
+
 
 }

@@ -2,7 +2,7 @@ spring:
   application:
     name: tracking_order
   datasource:
-    url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3306/management_order}
+    url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3306/manage_order}
     username: ${DBMS_USERNAME:root}
     password: ${DBMS_PASSWORD:250104}
   jpa:

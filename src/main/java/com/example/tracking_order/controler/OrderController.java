@@ -2,7 +2,9 @@ package com.example.tracking_order.controler;
 
 import com.example.tracking_order.dto.request.OrderReq;
 import com.example.tracking_order.common.BaseResponse;
+import com.example.tracking_order.dto.request.OrderReviewReq;
 import com.example.tracking_order.dto.response.OrderRes;
+import com.example.tracking_order.dto.response.OrderReviewRes;
 import com.example.tracking_order.service.IOrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +22,7 @@ import java.util.List;
 public class OrderController {
     private final IOrderService service;
 
-    @PostMapping()
+    @PostMapping("/checkout")
     public ResponseEntity<BaseResponse<OrderRes>> create(@RequestBody OrderReq req) {
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.create(req)), HttpStatus.CREATED);
     }
@@ -34,5 +36,9 @@ public class OrderController {
         Sort sortBy = Sort.by(sortDirection, sort);
         Pageable pageable = PageRequest.of(page, size, sortBy);
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.findAll(pageable)),  HttpStatus.OK);
+    }
+    @PostMapping("/checkout/review")
+    public ResponseEntity<BaseResponse<OrderReviewRes>> checkout(@RequestBody OrderReviewReq req) {
+        return new ResponseEntity<>(BaseResponse.ofSuccess(service.review(req)), HttpStatus.OK);
     }
 }

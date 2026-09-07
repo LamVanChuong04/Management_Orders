@@ -21,13 +21,13 @@ public class DiscountController {
     private final IDiscountService service;
 
     @PostMapping()
-    @PreAuthorize("hasRole('SELLER')")
+    //@PreAuthorize("hasRole('SELLER')")
     public ResponseEntity< BaseResponse<DiscountRes>> create(@RequestBody @Valid DiscountReq req) {
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.create(req)),  HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('SELLER')")
+    //@PreAuthorize("hasRole('SELLER')")
     public ResponseEntity< BaseResponse<DiscountRes>> update(@PathVariable UUID id,
                                             @RequestBody @Valid DiscountReq req) {
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.update(id, req)), HttpStatus.OK);

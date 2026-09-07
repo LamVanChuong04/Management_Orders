@@ -39,8 +39,8 @@ public class OrderEntity extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "order")
     private List<TrackLogEnitty> trackLog = new ArrayList<>();
 
-    @OneToOne
-    @JoinColumn(name = "address_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "address_id", nullable = false, unique = false)
     private AddressEntity address;
 
     @Column(name = "price_total")

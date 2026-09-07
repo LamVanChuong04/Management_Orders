@@ -4,6 +4,7 @@ import com.example.tracking_order.dto.request.OrderReq;
 import com.example.tracking_order.dto.response.OrderRes;
 import com.example.tracking_order.entity.OrderEntity;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import java.util.List;

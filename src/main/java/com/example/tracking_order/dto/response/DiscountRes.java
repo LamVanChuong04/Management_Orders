@@ -17,4 +17,6 @@ public class DiscountRes {
     private DiscountType discountType;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime HSD;
+    private String code;
+    private Integer quantity;
 }

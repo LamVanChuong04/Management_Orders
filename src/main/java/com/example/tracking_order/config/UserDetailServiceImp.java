@@ -23,10 +23,7 @@ public class UserDetailServiceImp implements UserDetailsService {
         if(user == null){
             throw new BusinessException("Username not found");
         }
-        String role = user.getRole().toString();
-        // gan role
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_"+ role);
-        return new User(username, user.getPassword(), List.of(authority));
+        return user;
     }
 
 }

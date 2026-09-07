@@ -6,11 +6,14 @@ import com.example.tracking_order.entity.DiscountEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 
 @Mapper(componentModel = "spring")
 public interface DiscountMapper {
+    @Mapping(source = "quantity", target = "quantity")
     DiscountEntity fromCreate(DiscountReq req);
     DiscountEntity fromUpdate(DiscountReq req, @MappingTarget DiscountEntity entity);
     @Mapping(source = "endDate", target = "HSD")
+    @Mapping(source = "quantity", target = "quantity")
     DiscountRes toResponse(DiscountEntity entity);
 }

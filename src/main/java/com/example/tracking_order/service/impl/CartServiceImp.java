@@ -9,10 +9,7 @@ import com.example.tracking_order.entity.*;
 import com.example.tracking_order.exception.BusinessException;
 import com.example.tracking_order.exception.ResourceNotfoundException;
 import com.example.tracking_order.mapper.CartMapper;
-import com.example.tracking_order.repository.CartItemRepository;
-import com.example.tracking_order.repository.CartRepository;
-import com.example.tracking_order.repository.InventoryRepository;
-import com.example.tracking_order.repository.ProductVariantRepository;
+import com.example.tracking_order.repository.*;
 import com.example.tracking_order.service.ICartService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -32,6 +29,7 @@ public class CartServiceImp implements ICartService {
     private final CartItemRepository itemRepo;
     private final ProductVariantRepository  productRepo;
     private final InventoryRepository inventoryRepo;
+    private final UserRepository userRepo;
     private final CartMapper mapper;
     @Override
     @Transactional
@@ -43,7 +41,7 @@ public class CartServiceImp implements ICartService {
 
     @Override
     public CartDetailRes getById(UUID userId) {
-        CartEntity userCart = repo.findByUserId(userId).orElseThrow(()-> new ResourceNotfoundException());
+        CartEntity userCart = repo.findByUserId(userId).orElseGet(()-> createEmptyCart(userId));
         List<CartItemRes> items = new ArrayList<>();
         int totalQuantity = 0;
         if(userCart.getCartItems() != null) {
@@ -82,7 +80,7 @@ public class CartServiceImp implements ICartService {
                 .orElseThrow(() -> new BusinessException("Sản phẩm không tồn tại"));
 
         // 2. Tìm hoặc Tạo mới Cart cho User
-        CartEntity cart = repo.findByUserId(req.getUserId()).orElseThrow(()-> new ResourceNotfoundException());
+        CartEntity cart = repo.findByUserId(req.getUserId()).orElseGet(()-> createEmptyCart(req.getUserId()));
 
         // 3. Kiểm tra sản phẩm đã có trong giỏ hàng chưa
         Optional<CartItemEntity> existingItemOpt = itemRepo
@@ -94,7 +92,7 @@ public class CartServiceImp implements ICartService {
             targetQuantity += existingItemOpt.get().getQuantity();
         }
 
-        // 4. Validate Tồn kho khả dụng từ bảng Inventory
+        // 4. Validate Tồn kho từ bảng Inventory
         InventoryEntity inventory = inventoryRepo.findByProductVariantId(variant.getId())
                 .orElseThrow(() -> new BusinessException("Không tìm thấy dữ liệu tồn kho"));
 
@@ -133,5 +131,11 @@ public class CartServiceImp implements ICartService {
                 .quantity(savedItem.getQuantity())
                 .subTotal(subTotal)
                 .build();
+    }
+    private CartEntity createEmptyCart(UUID userId) {
+        CartEntity cart = new CartEntity();
+        UserEntity user = userRepo.findById(userId).orElseThrow(()-> new ResourceNotfoundException());
+        cart.setUser(user);
+        return repo.save(cart);
     }
 }

@@ -28,5 +28,5 @@ public class AddressReq {
     @Size(min = 6, max = 30, message = "Province must certain the least 6 characters")
     private String street;
 
-    private Boolean isDefault = false;
+    private Boolean isDefault;
 }
