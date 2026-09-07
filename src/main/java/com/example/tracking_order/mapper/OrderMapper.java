@@ -11,8 +11,11 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
-    OrderEntity fromCreate(OrderReq req);
-    OrderEntity fromUpdate(OrderReq req, @MappingTarget OrderEntity entity);
+//    OrderEntity fromCreate(OrderReq req);
+//    OrderEntity fromUpdate(OrderReq req, @MappingTarget OrderEntity entity);
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "priceShippment", target = "feeship")
+    @Mapping(source = "discount", target = "discount")
     OrderRes toResponse(OrderEntity entity);
     List<OrderRes> toResponseList(List<OrderEntity> entities);
 }

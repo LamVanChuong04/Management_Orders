@@ -14,3 +14,10 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
         format-sql: true
     show-sql: true
+
+openapi:
+  service:
+    api-docs: api-service
+    server: http://localhost:8080
+    title: API Service
+    version: 1.0.0

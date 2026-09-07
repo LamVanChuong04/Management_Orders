@@ -6,6 +6,8 @@ import com.example.tracking_order.dto.request.OrderReviewReq;
 import com.example.tracking_order.dto.response.OrderRes;
 import com.example.tracking_order.dto.response.OrderReviewRes;
 import com.example.tracking_order.service.IOrderService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,14 +21,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/orders")
 @AllArgsConstructor
+@Tag(name = "Order Controller")
 public class OrderController {
-    private final IOrderService service;
 
+    private final IOrderService service;
+    @Operation(method = "POST", summary = "Add new order", description = "Send a request via this API to create new order")
     @PostMapping("/checkout")
-    public ResponseEntity<BaseResponse<OrderRes>> create(@RequestBody OrderReq req) {
+    public ResponseEntity<BaseResponse<String>> create(@RequestBody OrderReq req) {
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.create(req)), HttpStatus.CREATED);
     }
-
+    @Operation(method = "GET", summary = "Get all order", description = "Get all order and pageable")
     @GetMapping()
     public ResponseEntity<BaseResponse<List<OrderRes>>> getAllOrders(@RequestParam int page,
                                                      @RequestParam int size,
@@ -37,6 +41,7 @@ public class OrderController {
         Pageable pageable = PageRequest.of(page, size, sortBy);
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.findAll(pageable)),  HttpStatus.OK);
     }
+    @Operation(method = "POST", summary = "Checkout review order", description = "Send a request via this API to checkout review order")
     @PostMapping("/checkout/review")
     public ResponseEntity<BaseResponse<OrderReviewRes>> checkout(@RequestBody OrderReviewReq req) {
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.review(req)), HttpStatus.OK);

@@ -50,7 +50,6 @@ public class OrderServiceImp implements IOrderService {
         OrderItemEntity oi = new OrderItemEntity();
         List<ItemProducts> items = req.getItems();
         BigDecimal subtotal = BigDecimal.ZERO;
-        BigDecimal feeship = BigDecimal.ZERO;
         BigDecimal dis = BigDecimal.ZERO;
         for(ItemProducts item : items)
         {
@@ -81,8 +80,9 @@ public class OrderServiceImp implements IOrderService {
         }
         UserEntity user = userRepo.findById(req.getUserId()).orElseThrow(()-> new BusinessException("User khong ton tai"));
         List<AddressEntity> address = user.getAddress();
-        BigDecimal totalPrice = subtotal.subtract(dis).subtract(feeship);
+        BigDecimal totalPrice = subtotal.subtract(dis).subtract(req.getFeeship());
 
+        // lay dia chi mac dinh cua user
         AddressEntity add = new AddressEntity();
         for(AddressEntity ad : address)
         {
@@ -96,7 +96,9 @@ public class OrderServiceImp implements IOrderService {
         order.setSubtotal(subtotal);
         order.setTotal(totalPrice);
         order.setDiscount(dis);
-        order.setPriceShippment(feeship);
+        order.setPriceShippment(req.getFeeship());
+
+        // set phuong thuc thanh toan
         if(req.getPaymentMethod() == PaymentMethod.COD){
             order.setPaymentMethod(req.getPaymentMethod());
             order.setPaymentStatus(PaymentStatus.UNPAID);
@@ -106,6 +108,7 @@ public class OrderServiceImp implements IOrderService {
             order.setPaymentMethod(req.getPaymentMethod());
             order.setPaymentStatus(PaymentStatus.AWAITING_PAYMENT);
         }
+        // sinh ra 1 track number
         String trackNumber = "TN-" + System.currentTimeMillis();;
         order.setStatus(OrderStatus.PENDING);
         repo.saveAndFlush(order);
@@ -122,15 +125,6 @@ public class OrderServiceImp implements IOrderService {
         return "TẠO ĐƠN HÀNG THÀNH CÔNG";
     }
 
-    @Override
-    @Transactional
-    public OrderRes update(UUID id, OrderReq req) {
-        OrderEntity order = repo.findById(id)
-                .orElseThrow(()-> new ResourceNotfoundException());
-        mapper.fromUpdate(req, order);
-        repo.save(order);
-        return mapper.toResponse(order);
-    }
 
     @Override
     public Page<OrderRes> findAll(Pageable pageable) {
@@ -138,18 +132,24 @@ public class OrderServiceImp implements IOrderService {
         return orders.map(mapper::toResponse);
     }
 
+
+    // checkout review
     @Override
     public OrderReviewRes review(OrderReviewReq req) {
         // check cart
-        CartEntity cart = cartRepo.findById(req.getCartId()).orElseThrow(()-> new BusinessException("Khong tin thay gio hang"));
-        // lay cac san pham tinh
-        List<ItemProducts> items = req.getItems();
+        CartEntity cart = cartRepo.findById(req.getCartId())
+                .orElseThrow(()-> new BusinessException("Khong tin thay gio hang"));
+
         BigDecimal subtotal = BigDecimal.ZERO;
-        BigDecimal feeship = BigDecimal.ZERO;
+        BigDecimal feeship = req.getFeeship();
         BigDecimal dis = BigDecimal.ZERO;
+        // lay cac san pham de tinh gia tri
+        List<ItemProducts> items = req.getItems();
+        // duyet qua cac san pham
         for(ItemProducts item : items)
         {
-            ProductVariantEntity variant = variantRepo.findById(item.getVariantId()).orElseThrow(()-> new BusinessException("Khong tin thay san pham"));
+            ProductVariantEntity variant = variantRepo.findById(item.getVariantId())
+                    .orElseThrow(()-> new BusinessException("Khong tin thay san pham"));
             if(variant.getPrice().compareTo(item.getPrice()) != 0){
                 throw new BusinessException("order wrong!");
             }
@@ -161,11 +161,15 @@ public class OrderServiceImp implements IOrderService {
                 }
             }
         }
-        UserEntity user = userRepo.findById(req.getUserId()).orElseThrow(()-> new BusinessException("User khong ton tai"));
-        List<AddressEntity> address = user.getAddress();
+        UserEntity user = userRepo.findById(req.getUserId())
+                .orElseThrow(()-> new BusinessException("User khong ton tai"));
+
         String fullName = user.getFirstName() + " " + user.getLastName();
+        // tinh tong chi phi can thanh toan sau khi ap voucher va fee ship
         BigDecimal totalPrice = subtotal.subtract(dis).subtract(feeship);
 
+        // lay dia chi mac dinh cua customer
+        List<AddressEntity> address = user.getAddress();
         AddressRes addressRes = new AddressRes();
         for(AddressEntity ad : address)
         {

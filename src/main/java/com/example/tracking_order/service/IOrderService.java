@@ -12,7 +12,6 @@ import java.util.UUID;
 
 public interface IOrderService {
     String create(OrderReq req);
-    OrderRes update(UUID id, OrderReq req);
     Page<OrderRes> findAll(Pageable pageable);
     OrderReviewRes review(OrderReviewReq req);
 }

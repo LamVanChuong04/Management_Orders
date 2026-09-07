@@ -15,6 +15,7 @@ public class OrderReq {
     private UUID userId;
     private PaymentMethod paymentMethod;
     private List<ItemProducts> items;
+    private BigDecimal feeship;
 
 
 }

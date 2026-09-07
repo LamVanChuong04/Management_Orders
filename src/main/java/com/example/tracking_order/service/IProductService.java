@@ -10,9 +10,10 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IProductService {
-    ProductEntity create(ProductReq request);
-    ProductEntity update(UUID id, ProductReq request);
+    ProductRes create(ProductReq request);
+    ProductRes update(UUID id, ProductReq request);
     void delete(UUID id);
     List<ProductRes> findAll();
     Page<ProductRes> findAll(Pageable pageable);
+    ProductRes findById(UUID id);
 }

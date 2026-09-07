@@ -16,4 +16,5 @@ public class OrderReviewReq {
     private UUID userId;
 
     private List<ItemProducts> items;
+    private BigDecimal feeship;
 }

@@ -12,9 +12,9 @@ public class OrderRes {
     private UUID userId;
     private AddressRes address;
     private BigDecimal total;
-    private BigDecimal shipping;
+    private BigDecimal feeship;
     private BigDecimal subtotal;
-    private BigDecimal itemDiscount;
+    private BigDecimal discount;
     private String paymentMethod;
 
     /* {

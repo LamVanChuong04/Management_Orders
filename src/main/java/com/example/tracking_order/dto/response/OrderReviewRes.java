@@ -14,7 +14,6 @@ import java.util.UUID;
 public class OrderReviewRes {
     private String fullName;
     private AddressRes addressRes;
-
     private List<ItemProducts> items;
     private BigDecimal subtotal;
     private BigDecimal discount;

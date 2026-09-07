@@ -4,6 +4,7 @@ import com.example.tracking_order.dto.request.ProductReq;
 import com.example.tracking_order.dto.response.ProductRes;
 import com.example.tracking_order.entity.CategoryEntity;
 import com.example.tracking_order.entity.ProductEntity;
+import com.example.tracking_order.exception.BusinessException;
 import com.example.tracking_order.exception.ResourceNotfoundException;
 import com.example.tracking_order.mapper.ProductMapper;
 import com.example.tracking_order.repository.CategoryRepository;
@@ -29,23 +30,23 @@ public class ProductSericeImp implements IProductService {
 
     @Override
     @Transactional
-    public ProductEntity create(ProductReq request) {
+    public ProductRes create(ProductReq request) {
         CategoryEntity category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(()-> new ResourceNotfoundException());
         ProductEntity entity = mapper.toProductEntity(request);
         entity.setCategory(category);
         productRepository.save(entity);
-        return entity;
+        return mapper.toProductResponse(entity);
     }
 
     @Override
     @Transactional
-    public ProductEntity update(UUID id, ProductReq request) {
+    public ProductRes update(UUID id, ProductReq request) {
         ProductEntity entity = productRepository.findById(id)
                 .orElseThrow(()->new ResourceNotfoundException());
         mapper.updateProduct(request, entity);
         productRepository.save(entity);
-        return entity;
+        return mapper.toProductResponse(entity);
     }
 
     @Override
@@ -67,5 +68,12 @@ public class ProductSericeImp implements IProductService {
     public Page<ProductRes> findAll(Pageable pageable) {
         Page<ProductEntity> page = productRepository.findByIsDeletedFalse(pageable);
         return page.map(mapper::toProductResponse);
+    }
+
+    @Override
+    public ProductRes findById(UUID id) {
+        ProductEntity product = productRepository.findById(id)
+                .orElseThrow(()-> new BusinessException("KHONG TIM THAY SAN PHAM"));
+        return mapper.toProductResponse(product);
     }
 }
