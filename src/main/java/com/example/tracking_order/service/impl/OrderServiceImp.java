@@ -39,9 +39,9 @@ public class OrderServiceImp implements IOrderService {
     private ProductVariantRepository  variantRepo;
     private UserRepository userRepo;
     private TrackLogRepository trackLogRepo;
+    private InventoryRepository inventoryRepo;
     private OrderMapper mapper;
     private AddressMapper addressMapper;
-    private IInventoryService inservice;
 
     @Override
     @Transactional
@@ -57,7 +57,13 @@ public class OrderServiceImp implements IOrderService {
             // kiem tra va update quantity in stock
             ProductVariantEntity variant = variantRepo.findById(item.getVariantId())
                     .orElseThrow(()-> new BusinessException("Khong tin thay san pham"));
-            inservice.updateStock(item.getVariantId(), item.getQuantity());
+            // update stock
+            int updatedRows = inventoryRepo.updateStock(item.getVariantId(), item.getQuantity());
+            if (updatedRows == 0) {
+                // Nếu không có bản ghi nào được update, tức là tồn kho không đủ
+                throw new BusinessException("Sản phẩm trong kho không đủ đáp ứng.");
+            }
+
             oi.setProductVariant(variant);
             oi.setPrice(item.getPrice());
             oi.setQuantity(item.getQuantity());

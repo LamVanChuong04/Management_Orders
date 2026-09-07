@@ -54,21 +54,20 @@ public class InventoryServiceImp implements IInventoryService {
         inventory.setIsDeleted(true);
         repository.save(inventory);
     }
-    @Override
-    @Transactional
-    public void updateStock(UUID varianId, Integer buyQuantity) {
-        InventoryEntity entity = new InventoryEntity();
-        InventoryEntity inventory = repository.findByProductVariantId(varianId)
-                .orElseThrow(()-> new BusinessException("Khong tin thay san pham trong kho"));
-        // check quantity
-        Long stock = inventory.getQuantityInStock();
-        if(stock < buyQuantity)
-        {
-            throw new BusinessException("San pham trong kho khong du dap ung.");
-        }else {
-            stock = inventory.getQuantityInStock() - buyQuantity;
-        }
-        entity.setQuantityInStock(stock);
-        repository.save(inventory);
-    }
+//    @Override
+//    @Transactional
+//    public void updateStock(UUID varianId, Integer buyQuantity) {
+//        InventoryEntity inventory = repository.findByProductVariantId(varianId)
+//                .orElseThrow(()-> new BusinessException("Khong tin thay san pham trong kho"));
+//        // check quantity
+//        Long stock = inventory.getQuantityInStock();
+//        if(stock < buyQuantity)
+//        {
+//            throw new BusinessException("San pham trong kho khong du dap ung.");
+//        }else {
+//            stock = inventory.getQuantityInStock() - buyQuantity;
+//        }
+//        inventory.setQuantityInStock(stock);
+//        repository.save(inventory);
+//    }
 }

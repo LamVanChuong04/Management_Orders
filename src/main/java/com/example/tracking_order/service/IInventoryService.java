@@ -13,5 +13,5 @@ public interface IInventoryService {
     InventoryRes create(InventoryReq req);
     InventoryRes update(UUID id, InventoryReq req);
     void delete(UUID id);
-    void updateStock(UUID varianId, Integer buyQuantity);
+    //void updateStock(UUID varianId, Integer buyQuantity);
 }
