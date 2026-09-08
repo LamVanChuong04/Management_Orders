@@ -10,8 +10,7 @@ import java.util.UUID;
 @Data
 @Builder
 public class CartDetailRes {
-    private UUID cartId;
-    private Integer totalItems;        // Tổng số lượng các sản phẩm khác nhau
-    private Integer totalQuantity;     // Tổng số lượng item
+//    private UUID cartId;
+    private Integer totalQuantity;
     private List<CartItemRes> items;
 }

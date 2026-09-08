@@ -7,10 +7,12 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class UpdateQuantityRequest {
+public class UpdateQuantityReq {
     @NotNull(message = "Số lượng không được để trống")
     @PositiveOrZero(message = "Số lượng phải lớn hơn hoặc bằng 0")
     private Integer quantity;
-
+    @NotNull(message = "Cart item id must be not null")
+    private UUID productVarianId;
+    @NotNull(message = "Cart item id must be not null")
     private UUID cartId;
 }

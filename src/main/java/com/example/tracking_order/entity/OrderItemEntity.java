@@ -40,4 +40,8 @@ public class OrderItemEntity extends BaseEntity implements Serializable {
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
+
+    private String color;
+    private String size;
+    private String weight;
 }

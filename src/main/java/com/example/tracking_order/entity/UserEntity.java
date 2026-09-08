@@ -75,6 +75,6 @@ public class UserEntity extends BaseEntity implements Serializable, UserDetails 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority("ROLE_"+ this.getRole().name()));
     }
 }

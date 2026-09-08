@@ -17,7 +17,7 @@ public interface CartItemMapper {
     CartItemEntity fromCreate(CartItemReq req);
 
 
-    @Mapping(source = "productVariant.product.id", target = "productId")
+    //@Mapping(source = "productVariant.product.id", target = "productId")
     @Mapping(source = "productVariant.product.productName", target = "productName")
     @Mapping(source = "productVariant.id", target = "variantId")
     @Mapping(source = "productVariant.color", target = "color")

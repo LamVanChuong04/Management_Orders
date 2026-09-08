@@ -11,8 +11,9 @@ import java.util.UUID;
 
 @Data
 public class OrderReq {
-    @NotNull
+    @NotNull(message = "User id must be not null")
     private UUID userId;
+
     private PaymentMethod paymentMethod;
     private List<ItemProducts> items;
     private BigDecimal feeship;

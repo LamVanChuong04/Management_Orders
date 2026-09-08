@@ -26,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,7 +48,9 @@ public class OrderServiceImp implements IOrderService {
     @Transactional
     public String create(OrderReq req) {
         OrderEntity order = new OrderEntity();
-        OrderItemEntity oi = new OrderItemEntity();
+        // danh sách order item
+        List<OrderItemEntity> orderItems = new ArrayList<>();
+
         List<ItemProducts> items = req.getItems();
         BigDecimal subtotal = BigDecimal.ZERO;
         BigDecimal dis = BigDecimal.ZERO;
@@ -62,10 +65,14 @@ public class OrderServiceImp implements IOrderService {
                 // Nếu không có bản ghi nào được update, tức là tồn kho không đủ
                 throw new BusinessException("Sản phẩm trong kho không đủ đáp ứng.");
             }
-
+            OrderItemEntity oi = new OrderItemEntity();
             oi.setProductVariant(variant);
             oi.setPrice(item.getPrice());
             oi.setQuantity(item.getQuantity());
+            oi.setColor(variant.getColor());
+            oi.setSize(variant.getSize());
+            oi.setWeight(variant.getWeight());
+
 
             if(variant.getPrice().compareTo(item.getPrice()) != 0){
                 throw new BusinessException("order wrong!");
@@ -77,6 +84,9 @@ public class OrderServiceImp implements IOrderService {
                     dis = dis.add(discount.getDiscountValue());
                 }
             }
+            // gắn order vào item
+            oi.setOrder(order);
+            orderItems.add(oi);
         }
         UserEntity user = userRepo.findById(req.getUserId()).orElseThrow(()-> new BusinessException("User khong ton tai"));
         List<AddressEntity> address = user.getAddress();
@@ -120,8 +130,8 @@ public class OrderServiceImp implements IOrderService {
         log.setOrder(order);
         trackLogRepo.save(log);
 
-        oi.setOrder(order);
-        orderItemRepo.save(oi);
+        // lưu tất cả order items
+        orderItemRepo.saveAll(orderItems);
         return "TẠO ĐƠN HÀNG THÀNH CÔNG";
     }
 

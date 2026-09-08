@@ -50,9 +50,9 @@ public class CartServiceImp implements ICartService {
                 totalQuantity += item.getQuantity();
                 BigDecimal subTotal = variant.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
                 CartItemRes res = CartItemRes.builder()
-                        .cartItemId(item.getId())
+                        //.cartItemId(item.getId())
                         .variantId(variant.getId())
-                        .productId(variant.getProduct().getId())
+                        //.productId(variant.getProduct().getId())
                         .productName(variant.getProduct().getProductName())
                         .color(variant.getColor())
                         .size(variant.getSize())
@@ -63,10 +63,7 @@ public class CartServiceImp implements ICartService {
                 items.add(res);
             }
         }
-        // 3. Trả về DTO tổng hợp
         return CartDetailRes.builder()
-                .cartId(userCart.getId())
-                .totalItems(items.size())
                 .totalQuantity(totalQuantity)
                 .items(items)
                 .build();
@@ -75,12 +72,12 @@ public class CartServiceImp implements ICartService {
     @Override
     @Transactional
     public CartItemRes addToCart(CartReq req) {
-        // 1. Kiểm tra sự tồn tại của ProductVariant
+        // 1. Tìm hoặc Tạo mới Cart cho User
+        CartEntity cart = repo.findByUserId(req.getUserId()).orElseGet(()-> createEmptyCart(req.getUserId()));
+
+        // 2. Kiểm tra sự tồn tại của ProductVariant
         ProductVariantEntity variant = productRepo.findById(req.getProductVariantId())
                 .orElseThrow(() -> new BusinessException("Sản phẩm không tồn tại"));
-
-        // 2. Tìm hoặc Tạo mới Cart cho User
-        CartEntity cart = repo.findByUserId(req.getUserId()).orElseGet(()-> createEmptyCart(req.getUserId()));
 
         // 3. Kiểm tra sản phẩm đã có trong giỏ hàng chưa
         Optional<CartItemEntity> existingItemOpt = itemRepo
@@ -117,12 +114,10 @@ public class CartServiceImp implements ICartService {
 
         CartItemEntity savedItem = itemRepo.save(cartItem);
 
-        // 6. Map dữ liệu trả về Response DTO
         BigDecimal subTotal = variant.getPrice().multiply(BigDecimal.valueOf(savedItem.getQuantity()));
 
         return CartItemRes.builder()
-                .productId(variant.getProduct().getId())
-                .cartItemId(savedItem.getId())
+                //.productId(variant.getProduct().getId())
                 .variantId(variant.getId())
                 .productName(variant.getProduct().getProductName())
                 .color(variant.getColor())
@@ -132,6 +127,8 @@ public class CartServiceImp implements ICartService {
                 .subTotal(subTotal)
                 .build();
     }
+
+
     private CartEntity createEmptyCart(UUID userId) {
         CartEntity cart = new CartEntity();
         UserEntity user = userRepo.findById(userId).orElseThrow(()-> new ResourceNotfoundException());

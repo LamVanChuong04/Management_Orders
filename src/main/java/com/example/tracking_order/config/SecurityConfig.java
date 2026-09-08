@@ -16,8 +16,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
-    public static String whiteList = "/*";
-    public static String blackList = "/users";
 
     @Bean
     public SecurityFilterChain configSecurity(HttpSecurity http) throws Exception {

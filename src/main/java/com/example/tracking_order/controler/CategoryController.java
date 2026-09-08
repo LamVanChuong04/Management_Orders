@@ -4,6 +4,7 @@ import com.example.tracking_order.dto.request.CategoryReq;
 import com.example.tracking_order.common.BaseResponse;
 import com.example.tracking_order.dto.response.CategoryRes;
 import com.example.tracking_order.service.ICategoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/category")
 @AllArgsConstructor
+@Tag(name = "Category Controller")
 public class CategoryController {
     private final ICategoryService service;
 

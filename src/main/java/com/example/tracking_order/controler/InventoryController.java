@@ -4,6 +4,7 @@ import com.example.tracking_order.dto.request.InventoryReq;
 import com.example.tracking_order.common.BaseResponse;
 import com.example.tracking_order.dto.response.InventoryRes;
 import com.example.tracking_order.service.IInventoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/inventory")
 @AllArgsConstructor
+@Tag(name = "Inventory Controller")
 public class InventoryController {
     private final IInventoryService service;
 
