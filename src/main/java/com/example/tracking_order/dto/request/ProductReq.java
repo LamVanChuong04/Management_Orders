@@ -23,4 +23,6 @@ public class ProductReq {
 
     @NotNull(message = "Category must not be null")
     private UUID categoryId;
+    @NotNull(message = "Shop must not be null")
+    private UUID shopId;
 }

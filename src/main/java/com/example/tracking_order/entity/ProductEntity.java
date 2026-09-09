@@ -40,4 +40,12 @@ public class ProductEntity extends BaseEntity implements Serializable {
 
     @OneToMany(mappedBy = "product")
     private List<ProductVariantEntity> productVariants = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "discount_id")
+    private DiscountEntity discount;
+
+    @ManyToOne
+    @JoinColumn(name = "shop_id", nullable = false)
+    private ShopEntity shop;
 }

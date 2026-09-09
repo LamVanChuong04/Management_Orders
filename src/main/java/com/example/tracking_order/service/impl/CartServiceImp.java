@@ -58,7 +58,6 @@ public class CartServiceImp implements ICartService {
                         .size(variant.getSize())
                         .price(variant.getPrice())
                         .quantity(item.getQuantity())
-                        .subTotal(subTotal)
                         .build();
                 items.add(res);
             }
@@ -111,10 +110,7 @@ public class CartServiceImp implements ICartService {
             cartItem.setProductVariant(variant);
             cartItem.setQuantity(req.getQuantity());
         }
-
         CartItemEntity savedItem = itemRepo.save(cartItem);
-
-        BigDecimal subTotal = variant.getPrice().multiply(BigDecimal.valueOf(savedItem.getQuantity()));
 
         return CartItemRes.builder()
                 //.productId(variant.getProduct().getId())
@@ -124,7 +120,6 @@ public class CartServiceImp implements ICartService {
                 .size(variant.getSize())
                 .price(variant.getPrice())
                 .quantity(savedItem.getQuantity())
-                .subTotal(subTotal)
                 .build();
     }
 

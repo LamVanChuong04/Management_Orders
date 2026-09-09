@@ -11,26 +11,29 @@ import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_of_discount")
+@Table(name = "shops")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserOfDiscounteEntity extends BaseEntity implements Serializable {
+public class ShopEntity extends BaseEntity implements Serializable {
     @Id
     @JdbcTypeCode(SqlTypes.BINARY)
     @Column(columnDefinition = "BINARY(16)")
     @UuidGenerator
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    private String shopName;
+    private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "discount_id", nullable = false)
-    private DiscountEntity discount;
+    @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
+    private List<ProductEntity> products = new ArrayList<>();
+
+    @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
+    private List<DiscountEntity> discounts = new ArrayList<>();
 }

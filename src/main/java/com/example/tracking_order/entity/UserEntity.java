@@ -70,9 +70,6 @@ public class UserEntity extends BaseEntity implements Serializable, UserDetails 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<OrderEntity> order = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<UserOfDiscounteEntity>  userOfDiscounts = new ArrayList<>();
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_"+ this.getRole().name()));

@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 public class DiscountRes {
@@ -19,4 +20,5 @@ public class DiscountRes {
     private LocalDateTime HSD;
     private String code;
     private Integer quantity;
+    private UUID shopId;
 }

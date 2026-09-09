@@ -10,10 +10,12 @@ import org.mapstruct.Mappings;
 
 @Mapper(componentModel = "spring")
 public interface DiscountMapper {
+    @Mapping(source = "shopId", target = "shop.id")
     @Mapping(source = "quantity", target = "quantity")
     DiscountEntity fromCreate(DiscountReq req);
     DiscountEntity fromUpdate(DiscountReq req, @MappingTarget DiscountEntity entity);
     @Mapping(source = "endDate", target = "HSD")
     @Mapping(source = "quantity", target = "quantity")
+    @Mapping(source = "shop.id", target = "shopId")
     DiscountRes toResponse(DiscountEntity entity);
 }

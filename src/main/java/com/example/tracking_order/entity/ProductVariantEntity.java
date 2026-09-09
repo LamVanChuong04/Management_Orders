@@ -49,4 +49,6 @@ public class ProductVariantEntity extends BaseEntity implements Serializable {
 
     @OneToMany(mappedBy = "productVariant")
     private List<InventoryEntity> inventoryEntities = new ArrayList<>();
+
+
 }

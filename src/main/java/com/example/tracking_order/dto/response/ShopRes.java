@@ -4,10 +4,8 @@ import lombok.Data;
 
 import java.util.UUID;
 @Data
-public class ProductRes {
+public class ShopRes {
+    private String shopName;
+    private String email;
     private UUID id;
-    private String productName;
-    private String description;
-    private UUID shopId;
-
 }

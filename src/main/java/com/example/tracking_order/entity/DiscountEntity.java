@@ -32,10 +32,6 @@ public class DiscountEntity extends BaseEntity implements Serializable {
     @UuidGenerator
     private UUID id;
 
-    @Column(columnDefinition = "BINARY(16)")
-    @UuidGenerator
-    private UUID shopId;
-
     private String code;
 
     @Column(nullable = false, length = 150)
@@ -43,7 +39,6 @@ public class DiscountEntity extends BaseEntity implements Serializable {
 
     @Column(nullable = false, length = 250)
     private String description;
-
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -62,9 +57,14 @@ public class DiscountEntity extends BaseEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private DiscountType discountType;
 
-    @OneToMany(mappedBy = "discount")
-    private List<UserOfDiscounteEntity> userOfDiscounts = new ArrayList<>();
 
     @Column(nullable = false)
     private Integer quantity;
+
+    @OneToMany(mappedBy = "discount")
+    private List<ProductEntity> products = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "shop_id", nullable = false)
+    private ShopEntity shop;
 }

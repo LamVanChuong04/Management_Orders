@@ -12,9 +12,6 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 public class OrderReviewRes {
-    private String fullName;
-    private AddressRes addressRes;
-    private List<ItemProducts> items;
     private BigDecimal subtotal;
     private BigDecimal discount;
     private BigDecimal shipping;

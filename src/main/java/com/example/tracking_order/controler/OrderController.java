@@ -28,7 +28,7 @@ public class OrderController {
     @Operation(method = "POST", summary = "Add new order", description = "Send a request via this API to create new order")
     @PostMapping("/checkout")
     public ResponseEntity<BaseResponse<String>> create(@RequestBody OrderReq req) {
-        return new ResponseEntity<>(BaseResponse.ofSuccess(service.create(req)), HttpStatus.CREATED);
+        return new ResponseEntity<>(BaseResponse.ofSuccess(service.checkout(req)), HttpStatus.CREATED);
     }
     @Operation(method = "GET", summary = "Get all order", description = "Get all order and pageable")
     @GetMapping()
@@ -42,8 +42,8 @@ public class OrderController {
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.findAll(pageable)),  HttpStatus.OK);
     }
     @Operation(method = "POST", summary = "Checkout review order", description = "Send a request via this API to checkout review order")
-    @PostMapping("/checkout/review")
-    public ResponseEntity<BaseResponse<OrderReviewRes>> checkout(@RequestBody OrderReviewReq req) {
-        return new ResponseEntity<>(BaseResponse.ofSuccess(service.review(req)), HttpStatus.OK);
+    @PostMapping("/sumary")
+    public ResponseEntity<BaseResponse<OrderReviewRes>> sumary(@RequestBody OrderReviewReq req) {
+        return new ResponseEntity<>(BaseResponse.ofSuccess(service.sumaryOrder(req)), HttpStatus.OK);
     }
 }

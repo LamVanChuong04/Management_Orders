@@ -71,11 +71,11 @@ public class UserController {
         return new ResponseEntity<>(BaseResponse.ofDeleteSuccess(), HttpStatus.OK);
     }
     // get all discounts for user
-    @Operation(method = "GET", summary = "Get all discount by user id", description = "Send a request via this API to get all discount by user id")
-    @GetMapping("/{id}/discount")
-    public ResponseEntity<BaseResponse<List<DiscountRes>>> getUserOfDiscount(@PathVariable UUID id) {
-        return new ResponseEntity<>(BaseResponse.ofSuccess(discountService.findAllByUserId(id)), HttpStatus.OK);
-    }
+//    @Operation(method = "GET", summary = "Get all discount by user id", description = "Send a request via this API to get all discount by user id")
+//    @GetMapping("/{id}/discount")
+//    public ResponseEntity<BaseResponse<List<DiscountRes>>> getUserOfDiscount(@PathVariable UUID id) {
+//        return new ResponseEntity<>(BaseResponse.ofSuccess(discountService.findAllByUserId(id)), HttpStatus.OK);
+//    }
     // // lấy chi tiết giỏ hàng
 //    @GetMapping("/{id}/cart")
 //    public ResponseEntity<BaseResponse<List<CartItemRes>> getUserOfCart(@PathVariable UUID id) {

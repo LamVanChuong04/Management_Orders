@@ -10,5 +10,5 @@ public interface IDiscountService {
     DiscountRes create(DiscountReq req);
     DiscountRes update(UUID id, DiscountReq req);
     List<DiscountRes> findAll();
-    List<DiscountRes> findAllByUserId(UUID id);
+//    List<DiscountRes> findAllByUserId(UUID id);
 }

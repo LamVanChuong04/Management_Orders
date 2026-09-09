@@ -36,7 +36,7 @@ public class CartController {
     // them san pham vao gio hang
     @Operation(method = "POST", summary = "Add items", description = "Send a request via this API to add items")
     @PostMapping()
-    public ResponseEntity<BaseResponse<CartItemRes>> create(@RequestBody @Valid CartReq req) {
+    public ResponseEntity<BaseResponse<CartItemRes>> addToCart(@RequestBody @Valid CartReq req) {
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.addToCart(req)), HttpStatus.CREATED);
     }
     // update so luong san pham trong cart

@@ -13,7 +13,7 @@ import java.util.List;
 public interface OrderMapper {
 //    OrderEntity fromCreate(OrderReq req);
 //    OrderEntity fromUpdate(OrderReq req, @MappingTarget OrderEntity entity);
-    @Mapping(source = "user.id", target = "userId")
+    //@Mapping(source = "user.id", target = "userId")
     @Mapping(source = "priceShippment", target = "feeship")
     @Mapping(source = "discount", target = "discount")
     OrderRes toResponse(OrderEntity entity);

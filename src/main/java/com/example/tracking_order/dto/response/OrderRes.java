@@ -9,7 +9,8 @@ import java.util.UUID;
 
 @Data
 public class OrderRes {
-    private UUID userId;
+    private String fullName;
+    private String phoneNumber;
     private AddressRes address;
     private BigDecimal total;
     private BigDecimal feeship;
@@ -18,12 +19,8 @@ public class OrderRes {
     private String paymentMethod;
 
     /* {
-    userId:
-    subtotal:
-    shipping:
-    discount:
-    total:
-    paymentMethod:
+    fullName:
+    phone:
     address:
     {
         province:
@@ -31,7 +28,11 @@ public class OrderRes {
         ward:
         street:
     }
-
+    paymentMethod:
+    subtotal:
+    shipping:
+    discount:
+    total:
 
     } */
 }
