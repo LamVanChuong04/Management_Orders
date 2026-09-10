@@ -1,8 +1,10 @@
 package com.example.tracking_order.service;
 
 import com.example.tracking_order.dto.request.DiscountReq;
+import com.example.tracking_order.dto.request.ShopDiscount;
 import com.example.tracking_order.dto.response.DiscountRes;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,4 +13,5 @@ public interface IDiscountService {
     DiscountRes update(UUID id, DiscountReq req);
     List<DiscountRes> findAll();
 //    List<DiscountRes> findAllByUserId(UUID id);
+    BigDecimal getDiscountValue(ShopDiscount req);
 }

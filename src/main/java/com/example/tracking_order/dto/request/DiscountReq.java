@@ -20,6 +20,7 @@ import java.util.UUID;
 
 @Data
 public class DiscountReq {
+    @NotNull(message = "Shop must be not null")
     private UUID shopId;
     @NotEmpty(message = "Name must be not empty")
     @Size(min = 6, max = 30, message = "Name must certain the least 6 characters")
@@ -41,5 +42,7 @@ public class DiscountReq {
     @NotNull(message = "Quantity must be not empty")
     @Min(0)
     private Integer quantity;
+    @NotEmpty(message = "Code must be not empty")
+    @Size(min = 6, max = 30, message = "Name must certain the least 6 characters")
     private String code;
 }
