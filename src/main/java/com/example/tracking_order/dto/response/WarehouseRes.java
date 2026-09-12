@@ -9,5 +9,4 @@ public class WarehouseRes {
     private String district;
     private String ward;
     private String street;
-//    private List<InventoryEntity> inventory = new ArrayList<>();
 }

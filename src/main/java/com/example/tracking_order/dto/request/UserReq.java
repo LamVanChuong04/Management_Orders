@@ -19,7 +19,7 @@ public class UserReq {
     @NotEmpty
     @Length(min = 2, max = 20)
     @Pattern(
-            regexp = "^[A-Za-z0-9]+$",
+            regexp = "^[A-Za-z0-9 ]+$",
             message = "First name must contain only letters and be 2-20 characters long"
     )
     private String firstName;
@@ -27,7 +27,7 @@ public class UserReq {
     @NotEmpty
     @Length(min = 5, max = 20)
     @Pattern(
-            regexp = "^[A-Za-z0-9]+$",
+            regexp = "^[A-Za-z0-9 ]+$",
             message = "Username must contain only letters and be 5-20 characters long"
     )
     private String userName;

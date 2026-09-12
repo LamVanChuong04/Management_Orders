@@ -6,8 +6,10 @@ import java.math.BigDecimal;
 import java.util.UUID;
 @Data
 public class OrderItemRes {
-    private UUID orderId;
-    private ProductVariantRes productVariant;
+    private UUID productVariantId;
     private BigDecimal quantity;
-    private BigDecimal price;
+    private BigDecimal unitPrice;
+    private String color;
+    private String size;
+    //private Integer weight;
 }

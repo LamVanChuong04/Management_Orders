@@ -55,7 +55,7 @@ public class UserEntity extends BaseEntity implements Serializable, UserDetails 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Formula("concat(first_name, '', last_name)")
+    @Formula("concat(first_name, ' ', last_name)")
     private String fullname;
 
     @Column(name = "phone", nullable = false)

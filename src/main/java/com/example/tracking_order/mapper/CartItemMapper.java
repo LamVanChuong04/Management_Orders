@@ -22,7 +22,7 @@ public interface CartItemMapper {
     @Mapping(source = "productVariant.id", target = "variantId")
     @Mapping(source = "productVariant.color", target = "color")
     @Mapping(source = "productVariant.size", target = "size")
-    @Mapping(source = "productVariant.price", target = "price")
+    @Mapping(source = "productVariant.price", target = "unitPrice")
     @Mapping(source = "quantity", target = "quantity")
     CartItemRes toResponse(CartItemEntity entity);
 

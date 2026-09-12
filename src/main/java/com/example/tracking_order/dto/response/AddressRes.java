@@ -11,6 +11,6 @@ public class AddressRes {
     private String district;
     private String ward;
     private String street;
-    private Boolean isDefault;
+    //private Boolean isDefault;
 
 }

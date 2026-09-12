@@ -41,8 +41,8 @@ public class TrackLogEnitty extends BaseEntity implements Serializable {
     @Column(nullable = false, length = 30)
     private String trackNumber;
 
-//    private String location;
-//    private String note;
+    private String location;
+      private String note;
 
     public TrackLogEnitty(OrderStatus orderStatus, OrderStatus orderStatus1, OrderEntity order, String trackNumber) {
         super();

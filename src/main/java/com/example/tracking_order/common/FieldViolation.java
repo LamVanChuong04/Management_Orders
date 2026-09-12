@@ -1,4 +1,4 @@
-package com.example.tracking_order.dto.response;
+package com.example.tracking_order.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

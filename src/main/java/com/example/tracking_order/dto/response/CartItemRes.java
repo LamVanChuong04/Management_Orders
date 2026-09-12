@@ -11,12 +11,11 @@ import java.util.UUID;
 @Data
 @Builder
 public class CartItemRes {
-    //private UUID cartItemId;
-    //private UUID productId;
-    private String productName;
     private UUID variantId;
+    private String productName;
     private String color;
     private String size;
-    private BigDecimal price;
+    private BigDecimal unitPrice;
     private int quantity;
+    private String statusInventory;
 }

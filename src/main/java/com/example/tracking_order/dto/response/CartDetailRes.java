@@ -10,7 +10,6 @@ import java.util.UUID;
 @Data
 @Builder
 public class CartDetailRes {
-//    private UUID cartId;
     private Integer totalQuantity;
     private List<CartItemRes> items;
 }

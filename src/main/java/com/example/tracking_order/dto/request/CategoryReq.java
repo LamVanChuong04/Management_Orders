@@ -13,10 +13,6 @@ import lombok.Setter;
 public class CategoryReq {
     @NotEmpty
     @Size(min = 3, max = 50)
-//    @Pattern(
-//            regexp = "^\\p{L}+$",
-//            message = "Category name must contain only letters and be 3-50 characters long"
-//    )
     private String name;
     @NotEmpty
     @Size(min = 5, max = 20)

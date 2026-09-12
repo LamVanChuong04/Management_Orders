@@ -2,6 +2,7 @@ package com.example.tracking_order.service;
 
 import com.example.tracking_order.dto.request.OrderReq;
 import com.example.tracking_order.dto.request.OrderReviewReq;
+import com.example.tracking_order.dto.request.UpdateStatusReq;
 import com.example.tracking_order.dto.response.OrderRes;
 import com.example.tracking_order.dto.response.OrderReviewRes;
 import org.springframework.data.domain.Page;
@@ -14,4 +15,7 @@ public interface IOrderService {
     Page<OrderRes> findAll(Pageable pageable);
     OrderReviewRes sumaryOrder(OrderReviewReq req);
     String checkout(OrderReq req);
+    void orderCancel(UUID orderId);
+    void updateStatus(UUID orderId, UpdateStatusReq req);
+    OrderRes getOrderDetail(UUID orderId);
 }

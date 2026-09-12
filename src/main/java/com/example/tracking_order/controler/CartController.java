@@ -33,6 +33,13 @@ public class CartController {
     public ResponseEntity<BaseResponse<CartDetailRes>> get(@PathVariable UUID userId) {
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.getById(userId)), HttpStatus.OK);
     }
+    // lấy userId từ thông tin người dùng đã đăng nhập
+    @Operation(method = "GET", summary = "Get cart", description = "Send a request via this API to get cart")
+    @GetMapping()
+    public ResponseEntity<BaseResponse<CartDetailRes>> getBy(@AuthenticationPrincipal UserEntity user) {
+        UUID userId = user.getId();
+        return new ResponseEntity<>(BaseResponse.ofSuccess(service.getById(userId)), HttpStatus.OK);
+    }
     // them san pham vao gio hang
     @Operation(method = "POST", summary = "Add items", description = "Send a request via this API to add items")
     @PostMapping()

@@ -1,10 +1,8 @@
 package com.example.tracking_order.service.impl;
 
-import com.example.tracking_order.dto.request.CartDetailReq;
-import com.example.tracking_order.dto.request.ItemProducts;
-import com.example.tracking_order.dto.request.OrderReq;
-import com.example.tracking_order.dto.request.OrderReviewReq;
+import com.example.tracking_order.dto.request.*;
 import com.example.tracking_order.dto.response.AddressRes;
+import com.example.tracking_order.dto.response.OrderItemRes;
 import com.example.tracking_order.dto.response.OrderRes;
 import com.example.tracking_order.dto.response.OrderReviewRes;
 import com.example.tracking_order.entity.*;
@@ -15,11 +13,13 @@ import com.example.tracking_order.enums.PaymentStatus;
 import com.example.tracking_order.exception.BusinessException;
 import com.example.tracking_order.exception.ResourceNotfoundException;
 import com.example.tracking_order.mapper.AddressMapper;
+import com.example.tracking_order.mapper.OrderItemMapper;
 import com.example.tracking_order.mapper.OrderMapper;
 import com.example.tracking_order.repository.*;
 import com.example.tracking_order.service.IDiscountService;
 import com.example.tracking_order.service.IInventoryService;
 import com.example.tracking_order.service.IOrderService;
+import com.example.tracking_order.utils.OrderStateMachine;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -41,15 +41,16 @@ public class OrderServiceImp implements IOrderService {
     private OrderRepository repo;
     private OrderItemRepository orderItemRepo;
     private CartRepository cartRepo;
-    //private DiscountRepository discountRepo;
     private ProductVariantRepository  variantRepo;
     private UserRepository userRepo;
     private TrackLogRepository trackLogRepo;
     private InventoryRepository inventoryRepo;
     private OrderMapper mapper;
     private AddressMapper addressMapper;
+    private AddressRepository addressRepo;
     private CartItemRepository cartItemRepo;
     private IDiscountService disService;
+    private OrderItemMapper oiMapper;
 
     @Override
     public Page<OrderRes> findAll(Pageable pageable) {
@@ -63,8 +64,7 @@ public class OrderServiceImp implements IOrderService {
                 .orElseThrow(()-> new BusinessException("Khong tin thay gio hang"));
 
         BigDecimal subtotal = BigDecimal.ZERO;
-        long randomValue = ThreadLocalRandom.current().nextLong(1000, 100001);
-        BigDecimal feeship = BigDecimal.valueOf(randomValue);
+        BigDecimal feeship = BigDecimal.ZERO;
         BigDecimal dis = BigDecimal.ZERO;
 
         List<CartItemEntity> cartItems = cart.getCartItems();
@@ -125,7 +125,6 @@ public class OrderServiceImp implements IOrderService {
             BigDecimal price = variant.getPrice();
             // ap voucher
             dis = disService.getDiscountValue(item.getDiscount());
-            price = price.subtract(dis);
 
             BigDecimal itemTotal = price.multiply(BigDecimal.valueOf(item.getQuantity()));
             subtotal = subtotal.add(itemTotal);
@@ -169,6 +168,66 @@ public class OrderServiceImp implements IOrderService {
         // lưu tất cả order items
         orderItemRepo.saveAll(orderItems);
         return "TẠO ĐƠN HÀNG THÀNH CÔNG";
+    }
+
+    @Override
+    @Transactional
+    public void orderCancel(UUID orderId) {
+        OrderEntity order = repo.findById(orderId)
+                .orElseThrow(()-> new BusinessException("Not found order"));
+        order.setStatus(OrderStatus.FAILED);
+        repo.save(order);
+
+    }
+
+    @Override
+    @Transactional
+    public void updateStatus(UUID orderId, UpdateStatusReq req) {
+        OrderEntity order = repo.findById(orderId)
+                .orElseThrow(()-> new BusinessException("Not found order"));
+        if (!OrderStateMachine.canTransition(order.getStatus(), req.getNewStatus())) {
+            throw new BusinessException("Không thể chuyển từ " + order.getStatus() + " sang " + req.getNewStatus());
+
+        }
+        TrackLogEnitty log = new TrackLogEnitty();
+        log.setOldStatus(order.getStatus());
+
+        // payment method: cod
+        if(order.getPaymentMethod() == PaymentMethod.COD &&
+                req.getNewStatus() == OrderStatus.DELIVERED){
+            order.setPaymentStatus(PaymentStatus.COMPLETED);
+        }
+        // set new status for order
+        order.setStatus(req.getNewStatus());
+
+        log.setNewStatus(req.getNewStatus());
+        log.setOrder(order);
+        log.setTrackNumber("TN-1789098721926");
+        log.setLocation(req.getLocation());
+        log.setNote(req.getNote());
+        trackLogRepo.save(log);
+    }
+
+    @Override
+    public OrderRes getOrderDetail(UUID orderId) {
+        OrderEntity order = repo.findById(orderId)
+                .orElseThrow(()-> new BusinessException("Not found order"));
+        UserEntity user = order.getUser();
+        String fullName = user.getFirstName() + " " + user.getLastName();
+        String phone = user.getPhone();
+        UUID addressId = order.getAddress().getId();
+        AddressEntity add = addressRepo.findById(addressId)
+                .orElseThrow(()-> new BusinessException("Not found address"));
+        AddressRes res = addressMapper.toResponse(add);
+
+        List<OrderItemEntity> items = orderItemRepo.findByOrderId(orderId);
+        List<OrderItemRes> orderDetail = new ArrayList<>();
+        for (OrderItemEntity item : items) {
+            OrderItemRes oi = oiMapper.toResponse(item);
+            orderDetail.add(oi);
+        }
+
+        return new OrderRes(fullName, phone, res, order.getSubtotal(), order.getDiscount(),order.getPriceShippment(), order.getTotal(), order.getPaymentMethod(), orderDetail);
     }
 
 }
