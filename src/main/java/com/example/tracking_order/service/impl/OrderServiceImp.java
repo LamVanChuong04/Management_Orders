@@ -1,39 +1,31 @@
 package com.example.tracking_order.service.impl;
 
 import com.example.tracking_order.dto.request.*;
-import com.example.tracking_order.dto.response.AddressRes;
-import com.example.tracking_order.dto.response.OrderItemRes;
-import com.example.tracking_order.dto.response.OrderRes;
-import com.example.tracking_order.dto.response.OrderReviewRes;
+import com.example.tracking_order.dto.response.*;
 import com.example.tracking_order.entity.*;
-import com.example.tracking_order.enums.DiscountStatus;
 import com.example.tracking_order.enums.OrderStatus;
 import com.example.tracking_order.enums.PaymentMethod;
 import com.example.tracking_order.enums.PaymentStatus;
 import com.example.tracking_order.exception.BusinessException;
-import com.example.tracking_order.exception.ResourceNotfoundException;
 import com.example.tracking_order.mapper.AddressMapper;
 import com.example.tracking_order.mapper.OrderItemMapper;
 import com.example.tracking_order.mapper.OrderMapper;
 import com.example.tracking_order.repository.*;
 import com.example.tracking_order.service.IDiscountService;
-import com.example.tracking_order.service.IInventoryService;
 import com.example.tracking_order.service.IOrderService;
 import com.example.tracking_order.utils.OrderStateMachine;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @AllArgsConstructor
@@ -229,5 +221,106 @@ public class OrderServiceImp implements IOrderService {
 
         return new OrderRes(fullName, phone, res, order.getSubtotal(), order.getDiscount(),order.getPriceShippment(), order.getTotal(), order.getPaymentMethod(), orderDetail);
     }
+
+    @Override
+    public Page<MyOrderRes> getOrderOfMe(UUID userId, Pageable pageable) {
+        Page<OrderEntity> orders = repo.findByUserId(userId, pageable);
+        return orders.map(mapper::toRes);
+    }
+
+    @Override
+    public int getOrderIsShipping(UUID userId) {
+        return repo.countOrderPending(userId);
+    }
+
+    @Override
+    public int getOrderIsCompleted(UUID userId) {
+        return repo.countOrderCompleted(userId);
+    }
+
+    @Override
+    public OrderDBRes getDB() {
+        int orderFailed = repo.countOrderFailed();
+        int orderPending = repo.countOrderPending();
+        int sumOrder = repo.sumQuantityOrder();
+        int orderShipping = repo.countOrderShipping();
+        BigDecimal totalRevenue = repo.totalRevenue();
+
+        return new OrderDBRes(orderFailed, orderPending, orderShipping, sumOrder, totalRevenue);
+    }
+
+    @Override
+    public Page<OrderRecentRes> getAllRecentOrder(Pageable pageable) {
+        Page<OrderEntity> orders = repo.findAll(pageable);
+
+        return orders.map(order -> {
+            OrderRecentRes or = new OrderRecentRes();
+            or.setOrderId(order.getId());
+            or.setOrderStatus(order.getStatus());
+            or.setAmount(order.getTotal());
+            or.setCreatedAt(order.getCreatedAt());
+            or.setCarrier("Express J&T");
+            UserEntity user = order.getUser();
+            or.setUserName(user.getFullname());
+
+            return or;
+        });
+    }
+
+    @Override
+    public Page<OrderConfirmRes> getAllPendingOrder(Pageable pageable) {
+        Page<OrderEntity> orders = repo.findByOrderStatus(pageable, OrderStatus.PENDING);
+
+        return orders.map(order -> {
+            OrderConfirmRes or = new OrderConfirmRes();
+            UserEntity user = order.getUser();
+            String fullName = user.getFirstName() + " " + user.getLastName();
+
+            AddressEntity add = addressRepo.findById(order.getAddress().getId())
+                    .orElseThrow(() -> new BusinessException("Not found address"));
+            AddressRes res = addressMapper.toResponse(add);
+
+            or.setAddress(res);
+            or.setFullName(fullName);
+            or.setTotal(order.getTotal());
+            or.setMethod(order.getPaymentMethod());
+            or.setStatus(order.getPaymentStatus());
+
+            List<OrderItemEntity> items = orderItemRepo.findByOrderId(order.getId());
+            List<ItemRes> orderDetail = new ArrayList<>();
+
+            for (OrderItemEntity item : items) {
+                ItemRes it = new ItemRes();
+                it.setUnitPrice(item.getPrice());
+                it.setQuantity(item.getQuantity());
+
+                ProductVariantEntity variant = item.getProductVariant();
+                ProductEntity product = variant.getProduct();
+
+                InventoryEntity inventory = inventoryRepo.findByProductVariantId(variant.getId())
+                        .orElseThrow(() -> new BusinessException("Không tìm thấy dữ liệu tồn kho"));
+
+                String statusInventory = inventory.getQuantityInStock() < item.getQuantity()
+                        ? "SOLD OUT" : "IN STOCK";
+
+                it.setStatusInventory(statusInventory);
+                it.setProductName(product.getProductName());
+
+                orderDetail.add(it); // fix: add vào list
+            }
+
+            or.setItems(orderDetail); // gắn list item vào response
+            return or;
+        });
+    }
+
+    @Override
+    public StatisticRes getStatistic(LocalDate createdAt) {
+        int pending = repo.countOrderPendingToday(createdAt);
+        int confirmed = repo.countOrderCompletedToday(createdAt);
+        int total = repo.countOrderToday(createdAt);
+        return new StatisticRes(pending,confirmed,total);
+    }
+
 
 }

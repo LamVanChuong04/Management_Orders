@@ -1,7 +1,7 @@
 package com.example.tracking_order.mapper;
 
 import com.example.tracking_order.dto.request.ProductReq;
-import com.example.tracking_order.dto.response.ProductRes;
+import com.example.tracking_order.dto.response.ProductDetailRes;
 import com.example.tracking_order.entity.ProductEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,7 +14,7 @@ public interface ProductMapper {
     @Mapping(source = "shopId", target = "shop.id")
     ProductEntity toProductEntity(ProductReq productReq);
     @Mapping(source = "shop.id", target = "shopId")
-    ProductRes toProductResponse(ProductEntity entity);
+    ProductDetailRes toProductResponse(ProductEntity entity);
     ProductEntity updateProduct(ProductReq request, @MappingTarget ProductEntity entity);
-    List<ProductRes> toProductResponseList(List<ProductEntity> entities);
+    List<ProductDetailRes> toProductResponseList(List<ProductEntity> entities);
 }

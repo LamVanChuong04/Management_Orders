@@ -4,10 +4,10 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 @Data
-public class ProductRes {
+public class ItemRes {
     private String productName;
-    private String categoryName;
-    private BigDecimal price;
+    private BigDecimal unitPrice;
+    private int quantity;
+    private String statusInventory;
     private int quantityInStock;
-    private String status;
 }

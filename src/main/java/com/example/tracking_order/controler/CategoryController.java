@@ -3,7 +3,9 @@ package com.example.tracking_order.controler;
 import com.example.tracking_order.dto.request.CategoryReq;
 import com.example.tracking_order.common.BaseResponse;
 import com.example.tracking_order.dto.response.CategoryRes;
+import com.example.tracking_order.dto.response.ProductDetailRes;
 import com.example.tracking_order.service.ICategoryService;
+import com.example.tracking_order.service.IProductService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.UUID;
 @Tag(name = "Category Controller")
 public class CategoryController {
     private final ICategoryService service;
+    private final IProductService proService;
 
 
     @GetMapping()
@@ -46,5 +49,10 @@ public class CategoryController {
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<CategoryRes>> getCategory(@PathVariable UUID id){
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.findById(id)), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/products")
+    public ResponseEntity<BaseResponse<List<ProductDetailRes>>> findById(@PathVariable UUID id){
+        return new ResponseEntity<>(BaseResponse.ofSuccess(proService.findByCategoryId(id)), HttpStatus.OK);
     }
 }

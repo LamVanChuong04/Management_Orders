@@ -3,6 +3,7 @@ package com.example.tracking_order.service.impl;
 import com.example.tracking_order.dto.request.ProductVariantReq;
 import com.example.tracking_order.dto.response.ProductVariantRes;
 import com.example.tracking_order.entity.ProductVariantEntity;
+import com.example.tracking_order.exception.BusinessException;
 import com.example.tracking_order.exception.ResourceNotfoundException;
 import com.example.tracking_order.mapper.ProductVariantMapper;
 import com.example.tracking_order.repository.ProductVariantRepository;
@@ -32,7 +33,7 @@ public class ProductVariantSerivceImp implements IProductVariantService {
     @Transactional
     public ProductVariantRes update(UUID id, ProductVariantReq req) {
         ProductVariantEntity entity = repo.findById(id)
-                .orElseThrow(()-> new ResourceNotfoundException());
+                .orElseThrow(()-> new BusinessException("Product Variant not found"));
         mapper.fromUpdate(req, entity);
         repo.save(entity);
         return mapper.fromEntity(entity);
@@ -42,7 +43,7 @@ public class ProductVariantSerivceImp implements IProductVariantService {
     @Transactional
     public void delete(UUID id) {
         ProductVariantEntity entity = repo.findById(id)
-                .orElseThrow(()-> new ResourceNotfoundException());
+                .orElseThrow(()-> new BusinessException("Product Variant not found"));
         entity.setIsDeleted(true);
         repo.save(entity);
     }
@@ -50,7 +51,8 @@ public class ProductVariantSerivceImp implements IProductVariantService {
     @Override
     public ProductVariantRes findById(UUID id) {
         ProductVariantEntity entity = repo.findById(id)
-                .orElseThrow(()-> new ResourceNotfoundException());
+                .orElseThrow(()-> new BusinessException("Product Variant not found"));
         return mapper.fromEntity(entity);
     }
+
 }

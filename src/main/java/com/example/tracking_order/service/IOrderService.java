@@ -3,12 +3,12 @@ package com.example.tracking_order.service;
 import com.example.tracking_order.dto.request.OrderReq;
 import com.example.tracking_order.dto.request.OrderReviewReq;
 import com.example.tracking_order.dto.request.UpdateStatusReq;
-import com.example.tracking_order.dto.response.OrderRes;
-import com.example.tracking_order.dto.response.OrderReviewRes;
+import com.example.tracking_order.dto.response.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public interface IOrderService {
@@ -18,4 +18,15 @@ public interface IOrderService {
     void orderCancel(UUID orderId);
     void updateStatus(UUID orderId, UpdateStatusReq req);
     OrderRes getOrderDetail(UUID orderId);
+    Page<MyOrderRes> getOrderOfMe(UUID userId, Pageable pageable);
+
+    int getOrderIsShipping(UUID userId);
+    int getOrderIsCompleted(UUID userId);
+
+    OrderDBRes getDB();
+    Page<OrderRecentRes> getAllRecentOrder(Pageable pageable);
+
+    Page<OrderConfirmRes>  getAllPendingOrder(Pageable pageable);
+
+    StatisticRes getStatistic(LocalDate createdAt);
 }

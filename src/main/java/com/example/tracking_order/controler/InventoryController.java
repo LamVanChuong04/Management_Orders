@@ -36,4 +36,10 @@ public class InventoryController {
         service.delete(id);
         return new ResponseEntity<>(BaseResponse.ofDeleteSuccess(),  HttpStatus.OK);
     }
+
+    @GetMapping("/{id}/check")
+    public ResponseEntity<BaseResponse<InventoryRes>> checkInventory(@RequestParam UUID id) {
+        return new ResponseEntity<>(BaseResponse.ofSuccess(service.checkInventory(id)), HttpStatus.OK);
+    }
+
 }

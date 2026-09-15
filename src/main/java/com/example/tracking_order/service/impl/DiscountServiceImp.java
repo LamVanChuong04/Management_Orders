@@ -15,6 +15,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -36,7 +39,7 @@ public class DiscountServiceImp implements IDiscountService {
     @Override
     @Transactional
     public DiscountRes update(UUID id, DiscountReq req) {
-        DiscountEntity discount = repo.findById(id).orElseThrow(()-> new ResourceNotfoundException());
+        DiscountEntity discount = repo.findById(id).orElseThrow(()-> new BusinessException("Discount expired"));
         mapper.fromUpdate(req, discount);
         return mapper.toResponse(discount);
     }
@@ -52,13 +55,22 @@ public class DiscountServiceImp implements IDiscountService {
     public BigDecimal getDiscountValue(ShopDiscount req) {
         if (req == null) return BigDecimal.ZERO;
         DiscountEntity discount = repo.findActiveById(req.getDiscountId())
-                .orElseThrow(() -> new BusinessException("Giảm giá không hợp lệ"));
-
+                .orElseThrow(() -> new BusinessException("Discount invalid"));
+        // validate discount
+        if(discount.getEndDate().isBefore(LocalDateTime.now())) {
+            throw new BusinessException("Discount expired");
+        }
         int updateRow = repo.updateQuantity(discount.getId());
         if (updateRow == 0) {
             throw new BusinessException("Voucher đã hết.");
         }
         return discount.getDiscountValue();
+    }
+
+    @Override
+    public List<DiscountRes> findByShopId(UUID shopId) {
+        List<DiscountEntity> discounts = repo.findByShopId(shopId);
+        return discounts.stream().map(mapper::toResponse).collect(Collectors.toList());
     }
 
 }

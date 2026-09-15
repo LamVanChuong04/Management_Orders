@@ -4,7 +4,7 @@ import lombok.Data;
 
 import java.util.UUID;
 @Data
-public class ProductRes {
+public class ProductDetailRes {
     private UUID id;
     private String productName;
     private String description;

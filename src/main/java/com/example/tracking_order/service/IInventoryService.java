@@ -5,6 +5,7 @@ import com.example.tracking_order.dto.response.InventoryRes;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,5 +14,10 @@ public interface IInventoryService {
     InventoryRes create(InventoryReq req);
     InventoryRes update(UUID id, InventoryReq req);
     void delete(UUID id);
-    //void updateStock(UUID varianId, Integer buyQuantity);
+    // check inventory
+    InventoryRes checkInventory(UUID variantId);
+    // check quantity tồn kho
+    int countLowStock();
+    int sumProductVariant();
+    BigDecimal sumPriceStock();
 }

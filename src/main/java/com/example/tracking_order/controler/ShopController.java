@@ -2,7 +2,9 @@ package com.example.tracking_order.controler;
 
 import com.example.tracking_order.common.BaseResponse;
 import com.example.tracking_order.dto.request.ShopReq;
+import com.example.tracking_order.dto.response.DiscountRes;
 import com.example.tracking_order.dto.response.ShopRes;
+import com.example.tracking_order.service.IDiscountService;
 import com.example.tracking_order.service.IShopService;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -19,6 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ShopController {
     private final IShopService service;
+    private final IDiscountService disService;
 
     @PostMapping()
     public ResponseEntity<BaseResponse<ShopRes>> createShop(@RequestBody @Valid ShopReq req) {
@@ -40,9 +43,11 @@ public class ShopController {
     public ResponseEntity<BaseResponse<ShopRes>> updateShop(@RequestBody @Valid ShopReq req) {
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.createShop(req)), HttpStatus.CREATED);
     }
-    @GetMapping()
-    public ResponseEntity<BaseResponse<List<ShopRes>>> getAllShop() {
-        return new ResponseEntity<>(BaseResponse.ofSuccess(service.getAllShops()),HttpStatus.OK);
+
+    //
+    @GetMapping("/{id}/discount")
+    public ResponseEntity<BaseResponse<List<DiscountRes>>> getDiscount(@PathVariable UUID id) {
+        return new ResponseEntity<>(BaseResponse.ofSuccess(disService.findByShopId(id)),HttpStatus.OK);
     }
 }
 

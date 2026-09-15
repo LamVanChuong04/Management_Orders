@@ -12,7 +12,6 @@ import java.util.UUID;
 
 @Repository
 public interface WarehouseRepository extends JpaRepository<WarehouseEntity, UUID> {
-    //List<WarehouseEntity> findAllIsDeletedFalse(Pageable pageable);
     Page<WarehouseEntity> findByIsDeletedFalse(Pageable pageable);
 
 }

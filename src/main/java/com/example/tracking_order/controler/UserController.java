@@ -4,7 +4,9 @@ import com.example.tracking_order.common.BaseResponse;
 import com.example.tracking_order.dto.request.ChangePassReq;
 import com.example.tracking_order.dto.request.UserReq;
 import com.example.tracking_order.dto.response.*;
-import com.example.tracking_order.service.IDiscountService;
+import com.example.tracking_order.enums.OrderStatus;
+import com.example.tracking_order.enums.PaymentStatus;
+import com.example.tracking_order.service.IOrderService;
 import com.example.tracking_order.service.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +30,7 @@ public class UserController {
     @Autowired
     private IUserService service;
     @Autowired
-    private IDiscountService discountService;
+    private IOrderService odService;
 
     @Operation(method = "POST", summary = "Add new user", description = "Send a request via this API to create new user")
     @PostMapping()
@@ -70,21 +72,34 @@ public class UserController {
         service.deleteUser(id);
         return new ResponseEntity<>(BaseResponse.ofDeleteSuccess(), HttpStatus.OK);
     }
-    // get all discounts for user
-//    @Operation(method = "GET", summary = "Get all discount by user id", description = "Send a request via this API to get all discount by user id")
-//    @GetMapping("/{id}/discount")
-//    public ResponseEntity<BaseResponse<List<DiscountRes>>> getUserOfDiscount(@PathVariable UUID id) {
-//        return new ResponseEntity<>(BaseResponse.ofSuccess(discountService.findAllByUserId(id)), HttpStatus.OK);
-//    }
-    // // lấy chi tiết giỏ hàng
-//    @GetMapping("/{id}/cart")
-//    public ResponseEntity<BaseResponse<List<CartItemRes>> getUserOfCart(@PathVariable UUID id) {
-//
-//    }
+
     @Operation(method = "POST", summary = "Change password for user", description = "Send a request via this API to change password for user")
     @PostMapping("/change-password")
     public ResponseEntity<BaseResponse<String>> changePassword(@Valid @RequestBody ChangePassReq req) {
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.changePassword(req)), HttpStatus.OK);
     }
 
+    @GetMapping("/{id}/orders")
+    public ResponseEntity<BaseResponse<List<MyOrderRes>>> getOrders(@PathVariable UUID id,
+                                                                    @RequestParam("size") int size,
+                                                                    @RequestParam("page") int page,
+                                                                    @RequestParam(value = "PENDING", required = false) OrderStatus status,
+                                                                    @RequestParam(value = "AWAITING_PAYMENT", required = false) PaymentStatus paymentStatus) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        return new ResponseEntity<>(BaseResponse.ofSuccess(odService.getOrderOfMe(id,pageable )), HttpStatus.OK);
+    }
+
+
+    @GetMapping("/{id}/sum-order-is-shipping")
+    public ResponseEntity<BaseResponse<Integer>> getSumOrderIsShipping(@PathVariable UUID id) {
+        return new ResponseEntity<>(BaseResponse.ofSuccess(odService.getOrderIsShipping(id)), HttpStatus.OK);
+
+    }
+
+    @GetMapping("/{id}/sum-order-is-completed")
+    public ResponseEntity<BaseResponse<Integer>> getSumOrderIsCompleted(@PathVariable UUID id) {
+        return new ResponseEntity<>(BaseResponse.ofSuccess(odService.getOrderIsCompleted(id)), HttpStatus.OK);
+
+    }
 }

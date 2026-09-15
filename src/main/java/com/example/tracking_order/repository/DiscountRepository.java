@@ -23,4 +23,7 @@ public interface DiscountRepository extends JpaRepository<DiscountEntity, UUID> 
     @Query("SELECT d FROM DiscountEntity d " +
             "WHERE d.id = :id AND d.status = 'ACTIVE' AND d.quantity > 0")
     Optional<DiscountEntity> findActiveById(@Param("id") UUID id);
+
+    // find discount by shopid
+    List<DiscountEntity> findByShopId(UUID id);
 }

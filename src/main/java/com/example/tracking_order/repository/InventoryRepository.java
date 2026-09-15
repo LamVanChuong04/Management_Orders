@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,4 +27,14 @@ public interface InventoryRepository extends JpaRepository<InventoryEntity, UUID
             "where i.quantityInStock >= :quantity and i.productVariant.id = :variantId")
     int updateStock(@Param("variantId") UUID variantId, @Param("quantity") Integer quantity);
 
+    @Query("select count(p.id) from ProductVariantEntity p " +
+            "join InventoryEntity i on p.id = i.productVariant.id " +
+            "group by p.id having sum(i.quantityInStock) < 10")
+    int countLowStock();
+    @Query("select sum(i.quantityInStock) from InventoryEntity i")
+    int sumProductVariant();
+
+    @Query("select sum(i.quantityInStock * p.price) from InventoryEntity i " +
+            "join ProductVariantEntity p on i.productVariant.id = p.id")
+    BigDecimal sumPriceStock();
 }

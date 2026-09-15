@@ -10,6 +10,4 @@ public class CategoryRes {
     private UUID id;
     private String name;
     private String parentId;
-    private List<ProductRes> products;
-
 }

@@ -8,13 +8,18 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 @Data
-public class OrderDashBoardRes {
-    private int isShipping;
-    private int isCompleted;
+public class MyOrderRes {
+    public MyOrderRes(LocalDateTime placeOrderDate, PaymentMethod paymentMethod, UUID orderId, OrderStatus orderStatus, BigDecimal totalPrice) {
+        this.placeOrderDate = placeOrderDate;
+        this.paymentMethod = paymentMethod;
+        this.orderId = orderId;
+        this.orderStatus = orderStatus;
+        this.totalPrice = totalPrice;
+    }
+    public MyOrderRes(){}
     private LocalDateTime placeOrderDate;
     private PaymentMethod paymentMethod;
     private UUID orderId;
-    private int quantityItem;
     private OrderStatus orderStatus;
     private BigDecimal totalPrice;
 }

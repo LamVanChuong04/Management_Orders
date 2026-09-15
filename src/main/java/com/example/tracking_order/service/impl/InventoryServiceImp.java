@@ -3,10 +3,12 @@ package com.example.tracking_order.service.impl;
 import com.example.tracking_order.dto.request.InventoryReq;
 import com.example.tracking_order.dto.response.InventoryRes;
 import com.example.tracking_order.entity.InventoryEntity;
+import com.example.tracking_order.entity.WarehouseEntity;
 import com.example.tracking_order.exception.BusinessException;
 import com.example.tracking_order.exception.ResourceNotfoundException;
 import com.example.tracking_order.mapper.InventoryMapper;
 import com.example.tracking_order.repository.InventoryRepository;
+import com.example.tracking_order.repository.WarehouseRepository;
 import com.example.tracking_order.service.IInventoryService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +24,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class InventoryServiceImp implements IInventoryService {
     private final InventoryRepository repository;
+    private final WarehouseRepository whRepository;
     private final InventoryMapper mapper;
 
     @Override
@@ -54,20 +58,40 @@ public class InventoryServiceImp implements IInventoryService {
         inventory.setIsDeleted(true);
         repository.save(inventory);
     }
-//    @Override
-//    @Transactional
-//    public void updateStock(UUID varianId, Integer buyQuantity) {
-//        InventoryEntity inventory = repository.findByProductVariantId(varianId)
-//                .orElseThrow(()-> new BusinessException("Khong tin thay san pham trong kho"));
-//        // check quantity
-//        Long stock = inventory.getQuantityInStock();
-//        if(stock < buyQuantity)
-//        {
-//            throw new BusinessException("San pham trong kho khong du dap ung.");
-//        }else {
-//            stock = inventory.getQuantityInStock() - buyQuantity;
-//        }
-//        inventory.setQuantityInStock(stock);
-//        repository.save(inventory);
-//    }
+
+    @Override
+    public InventoryRes checkInventory(UUID variantId) {
+        InventoryEntity entity = repository.findByProductVariantId(variantId)
+                .orElseThrow(()-> new BusinessException("Khong tim thay"));
+        WarehouseEntity warehouse = whRepository.findById(entity.getWarehouse().getId())
+                .orElseThrow(()-> new BusinessException("Khong tim thay"));
+        String addressWarehouse = warehouse.getName() + ", " +warehouse.getProvince();
+        String status;
+        if(entity.getQuantityInStock() == 0){
+            status = "Hết hàng";
+        }
+        else if(entity.getQuantityInStock() < 10){
+            status = "Sắp hết hàng";
+        }
+        else {
+            status = "Còn hàng";
+        }
+        return new InventoryRes(entity.getQuantityInStock(), addressWarehouse, variantId, status);
+    }
+
+    @Override
+    public int countLowStock() {
+        return repository.countLowStock();
+    }
+
+    @Override
+    public int sumProductVariant() {
+        return repository.sumProductVariant();
+    }
+
+    @Override
+    public BigDecimal sumPriceStock() {
+        return repository.sumPriceStock();
+    }
+
 }

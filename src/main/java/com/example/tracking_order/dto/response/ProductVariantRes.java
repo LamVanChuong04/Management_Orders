@@ -14,4 +14,5 @@ public class ProductVariantRes {
     private String color;
     private String size;
     private String weight;
+    private String sku;
 }

@@ -15,6 +15,24 @@ spring:
         format-sql: true
     show-sql: true
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: lamvanromkaka@gmail.com
+    password: bdys qhtr cmij rzvc   # App Password, không phải mật khẩu Gmail thật
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
 openapi:
   service:
     api-docs: api-service

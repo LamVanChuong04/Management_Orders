@@ -39,6 +39,8 @@ public class ProductVariantEntity extends BaseEntity implements Serializable {
     private String size;
     @Column(nullable = false, length = 10)
     private String weight;
+    @Column(nullable = false, length = 10)
+    private String sku;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)

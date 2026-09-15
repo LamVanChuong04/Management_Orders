@@ -1,7 +1,7 @@
 package com.example.tracking_order.service.impl;
 
 import com.example.tracking_order.dto.request.ProductReq;
-import com.example.tracking_order.dto.response.ProductRes;
+import com.example.tracking_order.dto.response.ProductDetailRes;
 import com.example.tracking_order.entity.CategoryEntity;
 import com.example.tracking_order.entity.ProductEntity;
 import com.example.tracking_order.exception.BusinessException;
@@ -30,7 +30,7 @@ public class ProductSericeImp implements IProductService {
 
     @Override
     @Transactional
-    public ProductRes create(ProductReq request) {
+    public ProductDetailRes create(ProductReq request) {
         CategoryEntity category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(()-> new ResourceNotfoundException());
         ProductEntity entity = mapper.toProductEntity(request);
@@ -41,7 +41,7 @@ public class ProductSericeImp implements IProductService {
 
     @Override
     @Transactional
-    public ProductRes update(UUID id, ProductReq request) {
+    public ProductDetailRes update(UUID id, ProductReq request) {
         ProductEntity entity = productRepository.findById(id)
                 .orElseThrow(()->new ResourceNotfoundException());
         mapper.updateProduct(request, entity);
@@ -59,21 +59,27 @@ public class ProductSericeImp implements IProductService {
     }
 
     @Override
-    public List<ProductRes> findAll() {
+    public List<ProductDetailRes> findAll() {
         return productRepository.findByIsDeletedFalse().stream().map(mapper::toProductResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Page<ProductRes> findAll(Pageable pageable) {
+    public Page<ProductDetailRes> findAll(Pageable pageable) {
         Page<ProductEntity> page = productRepository.findByIsDeletedFalse(pageable);
         return page.map(mapper::toProductResponse);
     }
 
     @Override
-    public ProductRes findById(UUID id) {
+    public ProductDetailRes findById(UUID id) {
         ProductEntity product = productRepository.findById(id)
                 .orElseThrow(()-> new BusinessException("KHONG TIM THAY SAN PHAM"));
         return mapper.toProductResponse(product);
+    }
+
+    @Override
+    public List<ProductDetailRes> findByCategoryId(UUID id) {
+        List<ProductEntity> products = productRepository.findByCategoryId(id);
+        return products.stream().map(mapper::toProductResponse).collect(Collectors.toList());
     }
 }
