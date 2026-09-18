@@ -1,13 +1,8 @@
 package com.example.tracking_order.dto.response;
-
-import com.example.tracking_order.dto.request.ItemProducts;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor

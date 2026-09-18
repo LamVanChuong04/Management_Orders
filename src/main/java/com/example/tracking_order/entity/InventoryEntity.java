@@ -29,11 +29,14 @@ public class InventoryEntity extends BaseEntity implements Serializable {
     @Column(nullable = false, name = "quantity_in_stock")
     private Long quantityInStock;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_id", nullable = false)
     private WarehouseEntity warehouse;
 
     @ManyToOne
     @JoinColumn(name = "product_variant_id", nullable = false)
     private ProductVariantEntity productVariant;
+
+//    @Version
+//    private Integer version;
 }

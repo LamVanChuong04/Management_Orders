@@ -5,7 +5,9 @@ import com.example.tracking_order.common.BaseResponse;
 import com.example.tracking_order.dto.request.OrderReviewReq;
 import com.example.tracking_order.dto.request.UpdateStatusReq;
 import com.example.tracking_order.dto.response.*;
+import com.example.tracking_order.entity.UserEntity;
 import com.example.tracking_order.service.IOrderService;
+import com.example.tracking_order.service.impl.TestRaceCondittion;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -29,11 +32,11 @@ import java.util.UUID;
 @Tag(name = "Order Controller")
 public class OrderController {
     private final IOrderService service;
-
+    private final TestRaceCondittion race;
 
     @Operation(method = "POST", summary = "Add new order", description = "Send a request via this API to create new order")
     @PostMapping("/checkout")
-    public ResponseEntity<BaseResponse<String>> create(@RequestBody OrderReq req) {
+    public ResponseEntity<BaseResponse<String>> create(@AuthenticationPrincipal UserEntity user, @RequestBody OrderReq req) {
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.checkout(req)), HttpStatus.CREATED);
     }
 
@@ -51,8 +54,9 @@ public class OrderController {
 
     @Operation(method = "POST", summary = "Checkout review order", description = "Send a request via this API to checkout review order")
     @PostMapping("/sumary")
-    public ResponseEntity<BaseResponse<OrderReviewRes>> sumary(@RequestBody OrderReviewReq req) {
-        return new ResponseEntity<>(BaseResponse.ofSuccess(service.sumaryOrder(req)), HttpStatus.OK);
+    public ResponseEntity<BaseResponse<OrderReviewRes>> sumary(@AuthenticationPrincipal UserEntity user) {
+        UUID id = user.getId();
+        return new ResponseEntity<>(BaseResponse.ofSuccess(service.sumaryOrder(id)), HttpStatus.OK);
     }
 
     // update status order
@@ -88,4 +92,11 @@ public class OrderController {
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.getStatistic(date)), HttpStatus.OK);
     }
 
+
+
+    @Operation(method = "POST", summary = "Add new order", description = "Send a request via this API to create new order")
+    @PostMapping("/optimistic")
+    public ResponseEntity<BaseResponse<?>> testOptimistic(@AuthenticationPrincipal UserEntity user, @RequestBody OrderReq req) throws InterruptedException {
+        return new ResponseEntity<>(BaseResponse.ofSuccess(race.testOptimistic(req)), HttpStatus.CREATED);
+    }
 }

@@ -94,4 +94,6 @@ public class InventoryServiceImp implements IInventoryService {
         return repository.sumPriceStock();
     }
 
+
+
 }

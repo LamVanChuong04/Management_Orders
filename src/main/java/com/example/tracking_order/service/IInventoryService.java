@@ -20,4 +20,6 @@ public interface IInventoryService {
     int countLowStock();
     int sumProductVariant();
     BigDecimal sumPriceStock();
+
+
 }

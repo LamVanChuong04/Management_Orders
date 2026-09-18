@@ -28,7 +28,7 @@ public class CartEntity extends BaseEntity implements Serializable {
     @UuidGenerator
     private UUID id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 

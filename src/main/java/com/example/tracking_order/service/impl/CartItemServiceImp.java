@@ -49,9 +49,9 @@ public class CartItemServiceImp implements ICartItemService {
         // kiem tra so luong ton kho
         UUID variantId = entity.getProductVariant().getId();
         InventoryEntity inventory = irepo.findByProductVariantId(variantId)
-                .orElseThrow(()-> new ResourceNotfoundException());
+                .orElseThrow(()-> new BusinessException("Khong tim thay trong kho"));
         if(inventory.getQuantityInStock() < newQuantity){
-            throw new RuntimeException("Số lượng tồn kho không đủ (Chỉ còn "
+            throw new BusinessException("Số lượng tồn kho không đủ (Chỉ còn "
                     + inventory.getQuantityInStock() + " sản phẩm khả dụng)");
         }
         // cap nhat so luong trong gio hang

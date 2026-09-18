@@ -34,18 +34,18 @@ public class ProductEntity extends BaseEntity implements Serializable {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false) // khóa ngoại của bảng products
     private CategoryEntity category;
 
     @OneToMany(mappedBy = "product")
     private List<ProductVariantEntity> productVariants = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "discount_id")
     private DiscountEntity discount;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id", nullable = false)
     private ShopEntity shop;
 }

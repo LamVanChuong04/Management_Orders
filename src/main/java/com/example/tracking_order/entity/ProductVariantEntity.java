@@ -42,7 +42,7 @@ public class ProductVariantEntity extends BaseEntity implements Serializable {
     @Column(nullable = false, length = 10)
     private String sku;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private ProductEntity product;
 

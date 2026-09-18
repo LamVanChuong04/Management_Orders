@@ -1,10 +1,12 @@
 package com.example.tracking_order.repository;
 
 import com.example.tracking_order.entity.InventoryEntity;
+import jakarta.persistence.LockModeType;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -37,4 +39,12 @@ public interface InventoryRepository extends JpaRepository<InventoryEntity, UUID
     @Query("select sum(i.quantityInStock * p.price) from InventoryEntity i " +
             "join ProductVariantEntity p on i.productVariant.id = p.id")
     BigDecimal sumPriceStock();
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select i from InventoryEntity i where i.productVariant.id in :variantIds")
+    List<InventoryEntity> findByProductVariantIdIn(List<UUID> variantIds);
+
+
+    // pessimistic lock
+
 }

@@ -12,10 +12,12 @@ import com.example.tracking_order.mapper.OrderItemMapper;
 import com.example.tracking_order.mapper.OrderMapper;
 import com.example.tracking_order.repository.*;
 import com.example.tracking_order.service.IDiscountService;
+import com.example.tracking_order.service.IInventoryService;
 import com.example.tracking_order.service.IOrderService;
 import com.example.tracking_order.utils.OrderStateMachine;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,10 +27,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class OrderServiceImp implements IOrderService {
     private OrderRepository repo;
     private OrderItemRepository orderItemRepo;
@@ -41,7 +46,7 @@ public class OrderServiceImp implements IOrderService {
     private AddressMapper addressMapper;
     private AddressRepository addressRepo;
     private CartItemRepository cartItemRepo;
-    private IDiscountService disService;
+    private IInventoryService iservice;
     private OrderItemMapper oiMapper;
 
     @Override
@@ -51,19 +56,25 @@ public class OrderServiceImp implements IOrderService {
     }
 
     @Override
-    public OrderReviewRes sumaryOrder(OrderReviewReq req) {
-        CartEntity cart = cartRepo.findById(req.getCartId())
+    public OrderReviewRes sumaryOrder(UUID userId) {
+        log.info("----------------------->");
+        CartEntity cart = cartRepo.findByUserId(userId)
                 .orElseThrow(()-> new BusinessException("Khong tin thay gio hang"));
-
+        log.info("cart: {}", cart);
         BigDecimal subtotal = BigDecimal.ZERO;
         BigDecimal feeship = BigDecimal.ZERO;
         BigDecimal dis = BigDecimal.ZERO;
 
-        List<CartItemEntity> cartItems = cart.getCartItems();
+        //List<CartItemEntity> cartItems = cartItemRepo.findCartItems(cart.getId());
+
+        //List<CartItemEntity> cartItems = cart.getCartItems();
+
+        List<CartItemEntity> cartItems = cartItemRepo.findCartItems(cart.getId());
+
         for(CartItemEntity ci : cartItems){
+            ProductVariantEntity variant = ci.getProductVariant();
             if(ci.getIsSelected()) {
-                ProductVariantEntity variant = ci.getProductVariant();
-                subtotal = subtotal.add(variant.getPrice().multiply(BigDecimal.valueOf(ci.getQuantity())));
+                subtotal = subtotal.add(variant.getPrice().multiply(BigDecimal.valueOf(ci.getQuantity()))).subtract(dis);
             }
         }
         BigDecimal totalPrice = subtotal.subtract(dis).add(feeship);
@@ -74,10 +85,11 @@ public class OrderServiceImp implements IOrderService {
     @Transactional
     public String checkout(OrderReq req) {
         OrderEntity order = new OrderEntity();
-//        // danh sách order item
         List<OrderItemEntity> orderItems = new ArrayList<>();
-        UserEntity user = userRepo.findById(req.getUserId())
-                .orElseThrow(()-> new BusinessException("Khong tin thay user"));
+
+        CartEntity cart = cartRepo.findById(req.getCartId())
+                .orElseThrow(()-> new BusinessException("Khong tin thay gio hang"));
+        UserEntity user = cart.getUser();
         // địa chỉ nhận hàng
         List<AddressEntity> address = user.getAddress();
         AddressEntity add = new AddressEntity();
@@ -92,31 +104,53 @@ public class OrderServiceImp implements IOrderService {
         // logic pricing
         BigDecimal subtotal = BigDecimal.ZERO;
         BigDecimal dis = BigDecimal.ZERO;
+        BigDecimal feeship = BigDecimal.ZERO;
         List<CartDetailReq> items = req.getItems();
+        // batch fetching
+        List<UUID> variantId = items.stream().map(CartDetailReq::getVariantId).collect(Collectors.toList());
+
+        Map<UUID, ProductVariantEntity> variants = variantRepo.findAllByIds(variantId).stream()
+                .collect(Collectors.toMap(ProductVariantEntity::getId, v -> v));
+
+        Map<UUID, InventoryEntity> inventoryMap = inventoryRepo.findByProductVariantIdIn(variantId).stream()
+                .collect(Collectors.toMap(inv -> inv.getProductVariant().getId(), inv -> inv));
+
         for(CartDetailReq item : items){
-            ProductVariantEntity variant = variantRepo.findById(item.getVariantId())
-                    .orElseThrow(()-> new BusinessException("Khong tin thay san pham"));
-            // kiem tra ton kho
-            int updatedRows = inventoryRepo.updateStock(item.getVariantId(), item.getQuantity());
-            if (updatedRows == 0) {
-                // Nếu không có bản ghi nào được update, tức là tồn kho không đủ
-                throw new BusinessException("Sản phẩm trong kho không đủ đáp ứng.");
+            // map(k,v) -> v = get(k)
+            ProductVariantEntity variant = variants.get(item.getVariantId());
+            if(variant == null){
+                throw new BusinessException("Khong tin thay san pham");
             }
+            // kiem tra ton kho
+
+//            int updatedRows = inventoryRepo.updateStock(item.getVariantId(), item.getQuantity());
+//            if (updatedRows == 0) {
+//                // Nếu không có bản ghi nào được update, tức là tồn kho không đủ
+//                throw new BusinessException("Sản phẩm trong kho không đủ đáp ứng.");
+//            }
+            InventoryEntity inventory = inventoryMap.get(item.getVariantId());
+            if (inventory == null) {
+                throw new BusinessException("Khong tim thay ton kho");
+            }
+
+            if (inventory.getQuantityInStock() < item.getQuantity()) {
+                throw new BusinessException(
+                        "San pham trong kho khong du"
+                );
+            }
+
+            inventory.setQuantityInStock(inventory.getQuantityInStock() - item.getQuantity());
+//
+            log.info("-----------------------------");
             OrderItemEntity oi = new OrderItemEntity();
             oi.setProductVariant(variant);
-            oi.setPrice(item.getPrice());
+            oi.setPrice(variant.getPrice());
             oi.setQuantity(item.getQuantity());
             oi.setColor(variant.getColor());
             oi.setSize(variant.getSize());
             oi.setWeight(variant.getWeight());
 
-            // validate price
-            if(variant.getPrice().compareTo(item.getPrice()) != 0){
-                throw new BusinessException("order wrong!");
-            }
             BigDecimal price = variant.getPrice();
-            // ap voucher
-            dis = disService.getDiscountValue(item.getDiscount());
 
             BigDecimal itemTotal = price.multiply(BigDecimal.valueOf(item.getQuantity()));
             subtotal = subtotal.add(itemTotal);
@@ -124,32 +158,35 @@ public class OrderServiceImp implements IOrderService {
             // gắn order vào item
             oi.setOrder(order);
             orderItems.add(oi);
-            // xoa item khoi cart
-            cartItemRepo.deleteByProductVariantId(variant.getId());
+
         }
-        BigDecimal totalPrice = subtotal.add(req.getFeeship());
+        // xoa item khoi cart
+        cartItemRepo.deleteByProductVariantIds(variantId);
+
+
+        BigDecimal totalPrice = subtotal.add(feeship);
         order.setUser(user);
         order.setAddress(add);
         order.setSubtotal(subtotal);
         order.setTotal(totalPrice);
         order.setDiscount(dis);
-        order.setPriceShippment(req.getFeeship());
+        order.setPriceShippment(feeship);
 
         // set phuong thuc thanh toan
         if(req.getPaymentMethod() == PaymentMethod.COD){
             order.setPaymentMethod(req.getPaymentMethod());
             order.setPaymentStatus(PaymentStatus.UNPAID);
-            // order.orderStatus = "pending"
         }
         else {
             order.setPaymentMethod(req.getPaymentMethod());
-            order.setPaymentStatus(PaymentStatus.AWAITING_PAYMENT);
+            order.setPaymentStatus(PaymentStatus.COMPLETED);
+
         }
         // sinh ra 1 track number
         String trackNumber = "TN-" + System.currentTimeMillis();;
         order.setStatus(OrderStatus.PENDING);
         repo.saveAndFlush(order);
-
+        // ghi vào tracklogs
         TrackLogEnitty log = new TrackLogEnitty();
         log.setTrackNumber(trackNumber);
         log.setOldStatus(OrderStatus.PENDING);

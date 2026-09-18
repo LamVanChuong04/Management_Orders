@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public interface IOrderService {
     Page<OrderRes> findAll(Pageable pageable);
-    OrderReviewRes sumaryOrder(OrderReviewReq req);
+    OrderReviewRes sumaryOrder(UUID userId);
     String checkout(OrderReq req);
     void orderCancel(UUID orderId);
     void updateStatus(UUID orderId, UpdateStatusReq req);

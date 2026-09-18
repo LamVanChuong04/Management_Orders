@@ -36,4 +36,7 @@ public class ShopEntity extends BaseEntity implements Serializable {
 
     @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
     private List<DiscountEntity> discounts = new ArrayList<>();
+
+
+    // product, category, discount, shop
 }

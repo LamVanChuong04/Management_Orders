@@ -3,6 +3,7 @@ package com.example.tracking_order.service;
 import com.example.tracking_order.dto.request.DiscountReq;
 import com.example.tracking_order.dto.request.ShopDiscount;
 import com.example.tracking_order.dto.response.DiscountRes;
+import com.example.tracking_order.entity.DiscountEntity;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,4 +15,7 @@ public interface IDiscountService {
     List<DiscountRes> findAll();
     BigDecimal getDiscountValue(ShopDiscount req);
     List<DiscountRes> findByShopId(UUID shopId);
+
+    BigDecimal getDiscountValue(DiscountEntity entity);
+
 }

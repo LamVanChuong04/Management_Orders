@@ -27,12 +27,6 @@ import java.util.UUID;
 public class CartController {
     private final ICartService service;
     private final ICartItemService iservice;
-    // lấy chi tiết giỏ hàng theo userId
-    @Operation(method = "GET", summary = "Get cart by user id", description = "Send a request via this API to get cart by user id")
-    @GetMapping("/{userId}")
-    public ResponseEntity<BaseResponse<CartDetailRes>> get(@PathVariable UUID userId) {
-        return new ResponseEntity<>(BaseResponse.ofSuccess(service.getById(userId)), HttpStatus.OK);
-    }
     // lấy userId từ thông tin người dùng đã đăng nhập
     @Operation(method = "GET", summary = "Get cart", description = "Send a request via this API to get cart")
     @GetMapping()

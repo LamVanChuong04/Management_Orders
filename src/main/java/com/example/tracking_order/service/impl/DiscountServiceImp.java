@@ -73,4 +73,15 @@ public class DiscountServiceImp implements IDiscountService {
         return discounts.stream().map(mapper::toResponse).collect(Collectors.toList());
     }
 
+    @Override
+    public BigDecimal getDiscountValue(DiscountEntity entity) {
+        if (entity == null) return BigDecimal.ZERO;
+        // validate discount
+        if(entity.getEndDate().isBefore(LocalDateTime.now())) {
+            throw new BusinessException("Discount expired");
+        }
+        return entity.getDiscountValue();
+    }
+
+
 }

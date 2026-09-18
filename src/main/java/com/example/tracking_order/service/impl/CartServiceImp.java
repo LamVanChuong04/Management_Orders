@@ -13,21 +13,21 @@ import com.example.tracking_order.repository.*;
 import com.example.tracking_order.service.ICartService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class CartServiceImp implements ICartService {
     private final CartRepository repo;
     private final CartItemRepository itemRepo;
-    private final ProductVariantRepository  productRepo;
+    private final ProductVariantRepository  variantRepo;
     private final InventoryRepository inventoryRepo;
     private final UserRepository userRepo;
     private final CartMapper mapper;
@@ -40,45 +40,51 @@ public class CartServiceImp implements ICartService {
     }
 
     @Override
+    @Transactional
     public CartDetailRes getById(UUID userId) {
-        CartEntity userCart = repo.findByUserId(userId).orElseGet(()-> createEmptyCart(userId));
-        List<CartItemRes> items = new ArrayList<>();
-        String statusInventory = new String();
+
+        // lấy cart theo user id
+        CartEntity userCart = repo.findByUserId(userId)
+                .orElseGet(() -> createEmptyCart(userId));
+        // join fetch
+        List<CartItemEntity> cartItems = itemRepo.findCartItemsAndProduct(userCart.getId());
+
+        List<UUID> variantIds = cartItems.stream()
+                .map(ci -> ci.getProductVariant().getId())
+                .collect(Collectors.toList());
+
+        // batch load inventory
+        Map<UUID, InventoryEntity> inventoryMap = inventoryRepo.findByProductVariantIdIn(variantIds).stream()
+                .collect(Collectors.toMap(inv -> inv.getProductVariant().getId(), inv -> inv));
+
         int totalQuantity = 0;
-        if(userCart.getCartItems() != null) {
-            for(CartItemEntity item : userCart.getCartItems()) {
-                ProductVariantEntity variant = item.getProductVariant();
-                // validate inventory
-                InventoryEntity inventory = inventoryRepo.findByProductVariantId(variant.getId())
-                        .orElseThrow(() -> new BusinessException("Không tìm thấy dữ liệu tồn kho"));
+        List<CartItemRes> items = new ArrayList<>();
 
-                if (inventory.getQuantityInStock() < item.getQuantity()) {
-                    statusInventory = "SOLD OF STOCK";
-                }
-                else{
-                    statusInventory = "IN STOCK";
-                }
+        for (CartItemEntity item : cartItems) {
+            ProductVariantEntity variant = item.getProductVariant();
+            InventoryEntity inventory = inventoryMap.get(variant.getId());
+            String statusInventory = inventory.getQuantityInStock() < item.getQuantity()
+                    ? "SOLD OUT" : "IN STOCK";
 
-                // tinh tong so luong san pham trong cart
-                totalQuantity += item.getQuantity();
+            totalQuantity += item.getQuantity();
 
-                CartItemRes res = CartItemRes.builder()
-                        .variantId(variant.getId())
-                        .productName(variant.getProduct().getProductName())
-                        .color(variant.getColor())
-                        .size(variant.getSize())
-                        .unitPrice(variant.getPrice())
-                        .quantity(item.getQuantity())
-                        .statusInventory(statusInventory)
-                        .build();
-                items.add(res);
-            }
+            items.add(CartItemRes.builder()
+                    .variantId(variant.getId())
+                    .productName(variant.getProduct().getProductName())
+                    .color(variant.getColor())
+                    .size(variant.getSize())
+                    .unitPrice(variant.getPrice())
+                    .quantity(item.getQuantity())
+                    .statusInventory(statusInventory)
+                    .build());
         }
+
         return CartDetailRes.builder()
                 .totalQuantity(totalQuantity)
                 .items(items)
                 .build();
     }
+
 
     @Override
     @Transactional
@@ -87,7 +93,7 @@ public class CartServiceImp implements ICartService {
         CartEntity cart = repo.findByUserId(req.getUserId()).orElseGet(()-> createEmptyCart(req.getUserId()));
         String statusInventory = new String();
         // 2. Kiểm tra sự tồn tại của ProductVariant
-        ProductVariantEntity variant = productRepo.findById(req.getProductVariantId())
+        ProductVariantEntity variant = variantRepo.findById(req.getProductVariantId())
                 .orElseThrow(() -> new BusinessException("Sản phẩm không tồn tại"));
 
         // 3. Kiểm tra sản phẩm đã có trong giỏ hàng chưa
