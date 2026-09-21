@@ -5,6 +5,7 @@ import com.example.tracking_order.service.IOrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -12,11 +13,11 @@ import java.util.concurrent.ExecutionException;
 public class TestRaceCondittion {
     private final IOrderService orderService;
 
-    public String testOptimistic(OrderReq req) throws InterruptedException {
+    public String testOptimistic(UUID id, OrderReq req) throws InterruptedException {
         Thread th1 = new Thread(()->{
             try{
                 System.out.println(Thread.currentThread().getName()+ " is creating order");
-                orderService.checkout(req);
+                orderService.checkout(id,req);
                 System.out.println(Thread.currentThread().getName()+ "created order successful with version ");
             }catch (Exception ex){
                 System.out.println(Thread.currentThread().getName() + " failed : " + ex.getMessage());
@@ -26,7 +27,7 @@ public class TestRaceCondittion {
         Thread th2 = new Thread(()->{
             try{
                 System.out.println(Thread.currentThread().getName()+ " is creating order");
-                orderService.checkout(req);
+                orderService.checkout(id,req);
                 System.out.println(Thread.currentThread().getName()+ " created order successful with version ");
             }catch (Exception ex){
                 System.out.println(Thread.currentThread().getName() + " failed : " + ex.getMessage());

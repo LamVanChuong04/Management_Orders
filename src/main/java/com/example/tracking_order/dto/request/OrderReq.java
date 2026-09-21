@@ -13,8 +13,6 @@ import java.util.UUID;
 
 @Data
 public class OrderReq {
-    @NotNull(message = "User id must be not null")
-    private UUID cartId;
     private List<CartDetailReq> items;
     private PaymentMethod paymentMethod;
 }

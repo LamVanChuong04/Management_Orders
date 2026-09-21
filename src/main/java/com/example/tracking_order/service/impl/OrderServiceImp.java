@@ -83,11 +83,11 @@ public class OrderServiceImp implements IOrderService {
 
     @Override
     @Transactional
-    public String checkout(OrderReq req) {
+    public String checkout(UUID userId, OrderReq req) {
         OrderEntity order = new OrderEntity();
         List<OrderItemEntity> orderItems = new ArrayList<>();
 
-        CartEntity cart = cartRepo.findById(req.getCartId())
+        CartEntity cart = cartRepo.findByUserId(userId)
                 .orElseThrow(()-> new BusinessException("Khong tin thay gio hang"));
         UserEntity user = cart.getUser();
         // địa chỉ nhận hàng

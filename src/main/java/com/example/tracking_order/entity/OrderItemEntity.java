@@ -12,6 +12,8 @@ import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -27,7 +29,7 @@ public class OrderItemEntity extends BaseEntity implements Serializable {
     @UuidGenerator
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private OrderEntity order;
 
@@ -44,4 +46,7 @@ public class OrderItemEntity extends BaseEntity implements Serializable {
     private String color;
     private String size;
     private String weight;
+
+    @OneToMany(mappedBy = "orderItem")
+    private List<OrderItemReturnEntity> orderItemReturns = new ArrayList<>();
 }

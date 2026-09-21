@@ -20,17 +20,17 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${username}
-    password: ${password}   # App Password, không phải mật khẩu Gmail thật
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
+#  mail:
+#    host: smtp.gmail.com
+#    port: 587
+#    username: ${username}
+#    password: ${password}   # App Password, không phải mật khẩu Gmail thật
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          starttls:
+#            enable: true
 
 
 openapi:

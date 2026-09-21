@@ -61,7 +61,7 @@ public class UserEntity extends BaseEntity implements Serializable, UserDetails 
     @Column(name = "phone", nullable = false)
     private String phone;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY)
     private CartEntity cart;
 
     @OneToMany(mappedBy = "user")
@@ -69,6 +69,9 @@ public class UserEntity extends BaseEntity implements Serializable, UserDetails 
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<OrderEntity> order = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<OrderReturnEntity> orderReturn = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

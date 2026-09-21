@@ -17,19 +17,19 @@ public class ScheduleJob {
     private final OrderRepository repo;
     private final IMailService service;
     //@Scheduled(fixedDelay = 1000)
-    public void sendEmail() {
-        List<OrderEntity> orShipping = repo.findByStatus(OrderStatus.SHIPPING);
-        for (OrderEntity order : orShipping) {
-            UserEntity user = order.getUser();
-            service.sendMail(user.getEmail(), "Xác nhận đơn hàng #" + order.getId(),
-                    "Cảm ơn bạn đã đặt hàng.");
-        }
-
-        List<OrderEntity> orDelivered = repo.findByStatus(OrderStatus.DELIVERED);
-        for (OrderEntity order : orShipping) {
-            UserEntity user = order.getUser();
-            service.sendMail(user.getEmail(), "Đơn hàng #" + order.getId() + " đã giao thành công",
-                    "Đơn hàng của bạn đã được giao. Cảm ơn bạn đã mua sắm!");
-        }
-    }
+//    public void sendEmail() {
+//        List<OrderEntity> orShipping = repo.findByStatus(OrderStatus.SHIPPING);
+//        for (OrderEntity order : orShipping) {
+//            UserEntity user = order.getUser();
+//            service.sendMail(user.getEmail(), "Xác nhận đơn hàng #" + order.getId(),
+//                    "Cảm ơn bạn đã đặt hàng.");
+//        }
+//
+//        List<OrderEntity> orDelivered = repo.findByStatus(OrderStatus.DELIVERED);
+//        for (OrderEntity order : orShipping) {
+//            UserEntity user = order.getUser();
+//            service.sendMail(user.getEmail(), "Đơn hàng #" + order.getId() + " đã giao thành công",
+//                    "Đơn hàng của bạn đã được giao. Cảm ơn bạn đã mua sắm!");
+//        }
+//    }
 }

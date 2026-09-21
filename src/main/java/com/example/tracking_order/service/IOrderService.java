@@ -14,7 +14,7 @@ import java.util.UUID;
 public interface IOrderService {
     Page<OrderRes> findAll(Pageable pageable);
     OrderReviewRes sumaryOrder(UUID userId);
-    String checkout(OrderReq req);
+    String checkout(UUID id, OrderReq req);
     void orderCancel(UUID orderId);
     void updateStatus(UUID orderId, UpdateStatusReq req);
     OrderRes getOrderDetail(UUID orderId);

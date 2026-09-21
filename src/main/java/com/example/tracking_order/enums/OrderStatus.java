@@ -6,7 +6,7 @@ public enum OrderStatus {
     PICKING,      // Đang lấy hàng
     SHIPPING,     // Đang giao hàng
     DELIVERED,    // Thành công
-    FAILED,       // Giao hàng lỗi
-    RETURNING,    // Chuyển hoàn
+    FAILED,       // Giao hàng lỗi, khách không nghe máy
+    RETURNING,    // Chuyển hoàn về kho
     REATTEMPT     // Giao lại lần 2
 }

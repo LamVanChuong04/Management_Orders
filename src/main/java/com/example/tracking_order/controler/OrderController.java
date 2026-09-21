@@ -37,7 +37,8 @@ public class OrderController {
     @Operation(method = "POST", summary = "Add new order", description = "Send a request via this API to create new order")
     @PostMapping("/checkout")
     public ResponseEntity<BaseResponse<String>> create(@AuthenticationPrincipal UserEntity user, @RequestBody OrderReq req) {
-        return new ResponseEntity<>(BaseResponse.ofSuccess(service.checkout(req)), HttpStatus.CREATED);
+        UUID id = user.getId();
+        return new ResponseEntity<>(BaseResponse.ofSuccess(service.checkout(id, req)), HttpStatus.CREATED);
     }
 
     @Operation(method = "GET", summary = "Get all order", description = "Get all order and pageable")
@@ -71,7 +72,7 @@ public class OrderController {
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.getOrderDetail(id)),HttpStatus.OK);
     }
 
-    @GetMapping("/dashboard")
+    @GetMapping("/order-dashboard")
     public ResponseEntity<BaseResponse<OrderDBRes>> getDashboard() {
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.getDB()), HttpStatus.OK);
     }
@@ -97,6 +98,7 @@ public class OrderController {
     @Operation(method = "POST", summary = "Add new order", description = "Send a request via this API to create new order")
     @PostMapping("/optimistic")
     public ResponseEntity<BaseResponse<?>> testOptimistic(@AuthenticationPrincipal UserEntity user, @RequestBody OrderReq req) throws InterruptedException {
-        return new ResponseEntity<>(BaseResponse.ofSuccess(race.testOptimistic(req)), HttpStatus.CREATED);
+        UUID id = user.getId();
+        return new ResponseEntity<>(BaseResponse.ofSuccess(race.testOptimistic(id, req)), HttpStatus.CREATED);
     }
 }

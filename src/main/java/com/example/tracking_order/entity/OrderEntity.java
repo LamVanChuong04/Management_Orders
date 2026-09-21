@@ -32,14 +32,14 @@ public class OrderEntity extends BaseEntity implements Serializable {
     @UuidGenerator
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
     @OneToMany(mappedBy = "order")
     private List<TrackLogEnitty> trackLog = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", nullable = false, unique = false)
     private AddressEntity address;
 
@@ -67,4 +67,6 @@ public class OrderEntity extends BaseEntity implements Serializable {
     @Column(name = "discount", nullable = false)
     private BigDecimal discount;
 
+    @OneToMany(mappedBy = "order")
+    private List<OrderReturnEntity> orderItemReturn = new ArrayList<>();
 }

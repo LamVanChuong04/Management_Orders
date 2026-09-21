@@ -1,6 +1,8 @@
 package com.example.tracking_order.entity;
 
 import com.example.tracking_order.common.BaseEntity;
+import com.example.tracking_order.enums.OriginType;
+import com.example.tracking_order.enums.ReturnStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,44 +13,42 @@ import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 @Entity
-@Table(name = "addresses")
+@Table(name = "orders_return")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddressEntity extends BaseEntity implements Serializable {
+public class OrderReturnEntity extends BaseEntity implements Serializable {
     @Id
     @JdbcTypeCode(SqlTypes.BINARY)
     @Column(columnDefinition = "BINARY(16)")
     @UuidGenerator
     private UUID id;
-
+    @Column(nullable = false, length = 20)
+    private String code;
     @Column(nullable = false, length = 50)
-    private String province;
+    private String reason;
 
-    @Column(nullable = false, length = 50)
-    private String district;
+    @Enumerated(EnumType.STRING)
+    private ReturnStatus returnStatus;
+    @Enumerated(EnumType.STRING)
+    private OriginType originType;
 
-    @Column(nullable = false, length = 50)
-    private String ward;
-
-    @Column(nullable = false, length = 150)
-    private String street;
-
-    @Column(name = "is_default", nullable = false)
-    private Boolean isDefault;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    private OrderEntity order;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @OneToMany(mappedBy = "address")
-    private List<OrderEntity> order = new ArrayList<>();
+    private BigDecimal totalRefund;
 
 
+    @OneToMany(mappedBy = "orderReturn")
+    private List<OrderItemReturnEntity> items = new ArrayList<>();
 }
