@@ -33,7 +33,7 @@ public class OrderItemEntity extends BaseEntity implements Serializable {
     @JoinColumn(name = "order_id", nullable = false)
     private OrderEntity order;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_variant_id", nullable = false)
     private ProductVariantEntity productVariant;
 

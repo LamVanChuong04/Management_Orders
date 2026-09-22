@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 @Repository
@@ -30,5 +31,7 @@ public interface OrderReturnRepository extends JpaRepository<OrderReturnEntity, 
     @EntityGraph(attributePaths = {"user", "items", "items.orderItem", "items.orderItem.productVariant", "items.orderItem.productVariant.product"})
     Optional<OrderReturnEntity> findById(UUID id);
 
+    @EntityGraph(attributePaths = {"user"})
+    List<OrderReturnEntity> findAll();
 
 }

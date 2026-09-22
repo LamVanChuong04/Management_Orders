@@ -8,10 +8,8 @@ import com.example.tracking_order.enums.PaymentMethod;
 import com.example.tracking_order.enums.PaymentStatus;
 import com.example.tracking_order.exception.BusinessException;
 import com.example.tracking_order.mapper.AddressMapper;
-import com.example.tracking_order.mapper.OrderItemMapper;
 import com.example.tracking_order.mapper.OrderMapper;
 import com.example.tracking_order.repository.*;
-import com.example.tracking_order.service.IDiscountService;
 import com.example.tracking_order.service.IInventoryService;
 import com.example.tracking_order.service.IOrderService;
 import com.example.tracking_order.utils.OrderStateMachine;
@@ -24,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +44,6 @@ public class OrderServiceImp implements IOrderService {
     private AddressRepository addressRepo;
     private CartItemRepository cartItemRepo;
     private IInventoryService iservice;
-    private OrderItemMapper oiMapper;
 
     @Override
     public Page<OrderRes> findAll(Pageable pageable) {
@@ -106,7 +102,7 @@ public class OrderServiceImp implements IOrderService {
         BigDecimal dis = BigDecimal.ZERO;
         BigDecimal feeship = BigDecimal.ZERO;
         List<CartDetailReq> items = req.getItems();
-        // batch fetching
+
         List<UUID> variantId = items.stream().map(CartDetailReq::getVariantId).collect(Collectors.toList());
 
         Map<UUID, ProductVariantEntity> variants = variantRepo.findAllByIds(variantId).stream()
@@ -239,20 +235,29 @@ public class OrderServiceImp implements IOrderService {
 
     @Override
     public OrderRes getOrderDetail(UUID orderId) {
+        // find order by id
         OrderEntity order = repo.findById(orderId)
                 .orElseThrow(()-> new BusinessException("Not found order"));
+        // get information user
         UserEntity user = order.getUser();
         String fullName = user.getFirstName() + " " + user.getLastName();
         String phone = user.getPhone();
         UUID addressId = order.getAddress().getId();
+
         AddressEntity add = addressRepo.findById(addressId)
                 .orElseThrow(()-> new BusinessException("Not found address"));
         AddressRes res = addressMapper.toResponse(add);
 
+        // find order item by order id
         List<OrderItemEntity> items = orderItemRepo.findByOrderId(orderId);
         List<OrderItemRes> orderDetail = new ArrayList<>();
         for (OrderItemEntity item : items) {
-            OrderItemRes oi = oiMapper.toResponse(item);
+            OrderItemRes oi = new OrderItemRes();
+            oi.setColor(item.getColor());
+            oi.setProductName(item.getProductVariant().getProduct().getProductName());
+            oi.setSize(item.getSize());
+            oi.setSize(item.getSize());
+            oi.setUnitPrice(item.getPrice());
             orderDetail.add(oi);
         }
 

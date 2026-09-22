@@ -19,15 +19,8 @@ import java.util.UUID;
 
 @Repository
 public interface InventoryRepository extends JpaRepository<InventoryEntity, UUID> {
-    List<InventoryEntity> findByWarehouseId(UUID id);
     Page<InventoryEntity> findByWarehouseId(UUID id, Pageable pageable);
     Optional<InventoryEntity> findByProductVariantId(UUID id);
-
-    @Modifying
-    @Transactional
-    @Query("update InventoryEntity i set i.quantityInStock = i.quantityInStock - :quantity " +
-            "where i.quantityInStock >= :quantity and i.productVariant.id = :variantId")
-    int updateStock(@Param("variantId") UUID variantId, @Param("quantity") Integer quantity);
 
     @Query("select count(p.id) from ProductVariantEntity p " +
             "join InventoryEntity i on p.id = i.productVariant.id " +
@@ -40,11 +33,18 @@ public interface InventoryRepository extends JpaRepository<InventoryEntity, UUID
             "join ProductVariantEntity p on i.productVariant.id = p.id")
     BigDecimal sumPriceStock();
 
+    // pessimistic lock
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select i from InventoryEntity i where i.productVariant.id in :variantIds")
     List<InventoryEntity> findByProductVariantIdIn(List<UUID> variantIds);
+    // atomic update
+    // Kho validation khi xay ra loi
+    @Modifying
+    @Transactional
+    @Query("update InventoryEntity i set i.quantityInStock = i.quantityInStock - :quantity " +
+            "where i.quantityInStock >= :quantity and i.productVariant.id = :variantId")
+    int updateStock(@Param("variantId") UUID variantId, @Param("quantity") Integer quantity);
 
 
-    // pessimistic lock
 
 }

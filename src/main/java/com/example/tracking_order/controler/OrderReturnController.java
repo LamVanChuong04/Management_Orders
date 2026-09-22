@@ -1,25 +1,33 @@
 package com.example.tracking_order.controler;
 
-import com.example.tracking_order.common.BaseEntity;
+import com.alibaba.excel.EasyExcel;
 import com.example.tracking_order.common.BaseResponse;
 import com.example.tracking_order.dto.request.OrderReturnReq;
 import com.example.tracking_order.dto.response.OrderRefundRes;
-import com.example.tracking_order.dto.response.OrderReturnRes;
 import com.example.tracking_order.dto.response.ReturnDetailRes;
+import com.example.tracking_order.dto.response.ReturnExcel;
 import com.example.tracking_order.entity.UserEntity;
 import com.example.tracking_order.enums.ReturnStatus;
+import com.example.tracking_order.service.IExportExcelService;
 import com.example.tracking_order.service.IOrderReturnService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.relational.core.sql.In;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,6 +38,7 @@ import java.util.UUID;
 public class OrderReturnController {
 
     private final IOrderReturnService service;
+    private final IExportExcelService excelService;
 
     @PostMapping
     public ResponseEntity<BaseResponse<?>> createOrderReturn(@AuthenticationPrincipal UserEntity user,
@@ -61,8 +70,15 @@ public class OrderReturnController {
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.countAllReturns()), HttpStatus.OK);
     }
 
-    @GetMapping("/test/{id}")
+    @GetMapping("/return-detail/{id}")
     public ResponseEntity<BaseResponse<ReturnDetailRes>> getById(@PathVariable UUID id){
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.getReturnDetail(id)), HttpStatus.OK);
     }
+
+    @GetMapping("/export")
+    public void downloadOrderReturns(HttpServletResponse response) throws IOException {
+        excelService.exportExcelC1(response);
+    }
+
+
 }

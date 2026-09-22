@@ -2,6 +2,10 @@ package com.example.tracking_order.dto.response;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import com.example.tracking_order.enums.OriginType;
+import com.example.tracking_order.enums.ReturnStatus;
+import com.example.tracking_order.utils.OriginTypeConverter;
+import com.example.tracking_order.utils.ReturnStatusConverter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,15 +23,15 @@ public class ReturnExcel {
     @ExcelProperty("Mã Đơn Hàng")
     private String orderCode;
 
-    @ExcelProperty("Mã Khách Hàng")
-    private Long userId;
+    @ExcelProperty("Tên khách hàng")
+    private String fullName;
 
-    @ExcelProperty("Tên Sản Phẩm")
-    @ColumnWidth(30)
-    private String productName;
-
-    @ExcelProperty("Số Lượng")
-    private Integer quantity;
+//    @ExcelProperty("Tên Sản Phẩm")
+//    @ColumnWidth(30)
+//    private String productName;
+//
+//    @ExcelProperty("Số Lượng")
+//    private Integer quantity;
 
     @ExcelProperty("Tiền Hoàn")
     private BigDecimal refundAmount;
@@ -36,10 +40,13 @@ public class ReturnExcel {
     @ColumnWidth(30)
     private String reason;
 
-    @ExcelProperty("Trạng Thái")
-    private String status;
+    @ExcelProperty(value = "Trạng Thái", converter = ReturnStatusConverter.class)
+    private ReturnStatus status;
 
     @ExcelProperty("Ngày Tạo")
     @JsonFormat(pattern = "yyyy-mm-dd")
     private LocalDateTime createdAt;
+
+    @ExcelProperty(value = "Origin type", converter = OriginTypeConverter.class)
+    private OriginType type;
 }

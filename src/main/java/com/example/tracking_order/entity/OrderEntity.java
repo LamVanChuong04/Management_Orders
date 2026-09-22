@@ -69,4 +69,7 @@ public class OrderEntity extends BaseEntity implements Serializable {
 
     @OneToMany(mappedBy = "order")
     private List<OrderReturnEntity> orderItemReturn = new ArrayList<>();
+
+    @OneToMany(mappedBy = "order")
+    private List<OrderItemEntity> orderItem = new ArrayList<>();
 }

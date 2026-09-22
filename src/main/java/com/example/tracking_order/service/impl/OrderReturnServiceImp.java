@@ -2,7 +2,9 @@ package com.example.tracking_order.service.impl;
 
 import com.example.tracking_order.dto.request.OrderReturnReq;
 import com.example.tracking_order.dto.response.OrderRefundRes;
+import com.example.tracking_order.dto.response.OrderReturnRes;
 import com.example.tracking_order.dto.response.ReturnDetailRes;
+import com.example.tracking_order.dto.response.ReturnExcel;
 import com.example.tracking_order.entity.*;
 import com.example.tracking_order.enums.OrderStatus;
 import com.example.tracking_order.enums.OriginType;
@@ -163,5 +165,24 @@ public class OrderReturnServiceImp implements IOrderReturnService {
         }
         String code = "#ORD-" + System.currentTimeMillis();
         return new ReturnDetailRes(code, order.getReason(), user.getFullname(), res ,order.getCreatedAt(), order.getTotalRefund());
+    }
+
+    @Override
+    public List<ReturnExcel> getReturnsForExport() {
+        List<OrderReturnEntity> orders = repo.findAll();
+        List<ReturnExcel> res = new ArrayList<>();
+        for(OrderReturnEntity order : orders)
+        {
+           ReturnExcel temp = new ReturnExcel();
+            temp.setOrderCode(order.getCode());
+            temp.setFullName(order.getUser().getFullname());
+            temp.setStatus(order.getReturnStatus());
+            temp.setReason(order.getReason());
+            temp.setType(order.getOriginType());
+            temp.setRefundAmount(order.getTotalRefund());
+
+            res.add(temp);
+        }
+        return res;
     }
 }

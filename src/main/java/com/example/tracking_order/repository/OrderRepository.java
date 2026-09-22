@@ -6,6 +6,7 @@ import com.example.tracking_order.entity.OrderEntity;
 import com.example.tracking_order.enums.OrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,12 +17,12 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 @Repository
 public interface OrderRepository extends JpaRepository<OrderEntity, UUID> {
     Page<OrderEntity> findByIsDeletedFalse(Pageable pageable);
     Page<OrderEntity> findByUserId(UUID userId, Pageable pageable);
-    List<OrderEntity> findByUserId(UUID userId);
     @Query("select count(*) from OrderEntity o where o.status = 'FAILDED'")
     int countOrderFailed();
 
@@ -69,4 +70,8 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID> {
     @Query("select sum(o.total) from OrderEntity o where o.status = 'RETURNING'")
     BigDecimal totalRefund();
 
+
+    // find by order id
+    @EntityGraph(attributePaths = {"user", "orderItem", "address", "orderItem.productVariant.product"})
+    Optional<OrderEntity> findById(UUID orderId);
 }

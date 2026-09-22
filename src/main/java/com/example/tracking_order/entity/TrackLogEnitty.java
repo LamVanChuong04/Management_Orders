@@ -34,7 +34,7 @@ public class TrackLogEnitty extends BaseEntity implements Serializable {
     @Column(nullable = false, name = "new_status_order")
     private OrderStatus newStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private OrderEntity order;
 
