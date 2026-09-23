@@ -1,6 +1,7 @@
 package com.example.tracking_order.dto.response;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.example.tracking_order.enums.OriginType;
 import com.example.tracking_order.enums.ReturnStatus;
@@ -26,13 +27,6 @@ public class ReturnExcel {
     @ExcelProperty("Tên khách hàng")
     private String fullName;
 
-//    @ExcelProperty("Tên Sản Phẩm")
-//    @ColumnWidth(30)
-//    private String productName;
-//
-//    @ExcelProperty("Số Lượng")
-//    private Integer quantity;
-
     @ExcelProperty("Tiền Hoàn")
     private BigDecimal refundAmount;
 
@@ -44,7 +38,7 @@ public class ReturnExcel {
     private ReturnStatus status;
 
     @ExcelProperty("Ngày Tạo")
-    @JsonFormat(pattern = "yyyy-mm-dd")
+    @DateTimeFormat("yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 
     @ExcelProperty(value = "Origin type", converter = OriginTypeConverter.class)

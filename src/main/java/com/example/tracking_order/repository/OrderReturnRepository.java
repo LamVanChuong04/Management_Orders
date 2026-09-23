@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,5 +34,10 @@ public interface OrderReturnRepository extends JpaRepository<OrderReturnEntity, 
 
     @EntityGraph(attributePaths = {"user"})
     List<OrderReturnEntity> findAll();
+    @Query("select count(*) from OrderReturnEntity ")
+    Long countAll();
+
+    @Query("SELECT r FROM OrderReturnEntity r WHERE r.id > :lastId ORDER BY r.id ASC")
+    List<OrderReturnEntity> findNextBatch(@Param("lastId") UUID lastId, Pageable pageable);
 
 }

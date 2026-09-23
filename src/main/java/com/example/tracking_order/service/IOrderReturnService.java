@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +24,8 @@ public interface IOrderReturnService {
     int countAllReturns();
 
     ReturnDetailRes getReturnDetail(UUID returnId);
+
     List<ReturnExcel> getReturnsForExport();
 
-
+    List<ReturnExcel> getReturnsForExport2(UUID id, Pageable pageable);
 }

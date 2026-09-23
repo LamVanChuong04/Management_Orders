@@ -185,4 +185,23 @@ public class OrderReturnServiceImp implements IOrderReturnService {
         }
         return res;
     }
+
+    @Override
+    public List<ReturnExcel> getReturnsForExport2(UUID id, Pageable pageable) {
+        List<OrderReturnEntity> orders = repo.findNextBatch(id, pageable);
+        List<ReturnExcel> res = new ArrayList<>();
+        for(OrderReturnEntity order : orders)
+        {
+            ReturnExcel temp = new ReturnExcel();
+            temp.setOrderCode(order.getCode());
+            temp.setFullName(order.getUser().getFullname());
+            temp.setStatus(order.getReturnStatus());
+            temp.setReason(order.getReason());
+            temp.setType(order.getOriginType());
+            temp.setRefundAmount(order.getTotalRefund());
+
+            res.add(temp);
+        }
+        return res;
+    }
 }

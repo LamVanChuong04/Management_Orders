@@ -80,5 +80,10 @@ public class OrderReturnController {
         excelService.exportExcelC1(response);
     }
 
+    @GetMapping("/export2")
+    public void downloadOrderReturns2(HttpServletResponse response) throws IOException {
+        excelService.exportExcelC2(response);
+    }
+
 
 }

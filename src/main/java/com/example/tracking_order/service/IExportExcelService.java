@@ -6,4 +6,5 @@ import java.io.IOException;
 
 public interface IExportExcelService {
     void exportExcelC1(HttpServletResponse response) throws IOException;
+    void exportExcelC2(HttpServletResponse response) throws IOException;
 }
