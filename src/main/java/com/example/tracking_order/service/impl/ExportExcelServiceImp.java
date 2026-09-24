@@ -66,12 +66,11 @@ public class ExportExcelServiceImp implements IExportExcelService {
                 .excelType(ExcelTypeEnum.XLSX)
                 .autoCloseStream(false)
                 .build();
-        WriteSheet writeSheet = EasyExcel.writerSheet("Users").build();
+        WriteSheet writeSheet = EasyExcel.writerSheet("Order return").build();
 
         while (flag) {
-            //
+            // lấy batchSize record
             Pageable pageable = PageRequest.of(0, batchSize);
-            // chỉ lấy batchSize record
             List<ReturnExcel> data = service.getReturnsForExport2(lastId, pageable);
             if (data.isEmpty()) {
                 flag = false;

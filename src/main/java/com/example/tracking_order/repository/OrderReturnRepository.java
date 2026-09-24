@@ -33,9 +33,6 @@ public interface OrderReturnRepository extends JpaRepository<OrderReturnEntity, 
     Optional<OrderReturnEntity> findById(UUID id);
 
     @EntityGraph(attributePaths = {"user"})
-    List<OrderReturnEntity> findAll();
-    @Query("select count(*) from OrderReturnEntity ")
-    Long countAll();
 
     @Query("SELECT r FROM OrderReturnEntity r WHERE r.id > :lastId ORDER BY r.id ASC")
     List<OrderReturnEntity> findNextBatch(@Param("lastId") UUID lastId, Pageable pageable);
