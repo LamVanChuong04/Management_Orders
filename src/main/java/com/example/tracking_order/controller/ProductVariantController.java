@@ -1,4 +1,4 @@
-package com.example.tracking_order.controler;
+package com.example.tracking_order.controller;
 
 import com.example.tracking_order.dto.request.ProductVariantReq;
 import com.example.tracking_order.common.BaseResponse;
@@ -11,11 +11,9 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

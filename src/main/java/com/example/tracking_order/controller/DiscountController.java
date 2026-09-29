@@ -1,4 +1,4 @@
-package com.example.tracking_order.controler;
+package com.example.tracking_order.controller;
 
 import com.example.tracking_order.dto.request.DiscountReq;
 import com.example.tracking_order.common.BaseResponse;
@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

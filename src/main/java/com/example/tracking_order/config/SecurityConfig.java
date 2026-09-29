@@ -1,5 +1,7 @@
 package com.example.tracking_order.config;
 
+import com.example.tracking_order.utils.JwtFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -10,13 +12,20 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
-
+    @Autowired
+    private JwtFilter jwtAuthenticationFilter;
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new UserDetailServiceImp();
+    }
     @Bean
     public SecurityFilterChain configSecurity(HttpSecurity http) throws Exception {
         http
@@ -24,16 +33,23 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/v1/users/*").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/category","/api/v1/product/{id}").permitAll()
                                 .requestMatchers("/swagger-ui/**").permitAll()
                                 .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults());
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+    @Bean
+    public AuthenticationProvider authenticationProvider(){
+        DaoAuthenticationProvider authenticationProvider=new DaoAuthenticationProvider(userDetailsService());
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
     }
 
     @Bean

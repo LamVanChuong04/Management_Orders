@@ -1,4 +1,4 @@
-package com.example.tracking_order.controler;
+package com.example.tracking_order.controller;
 
 import com.example.tracking_order.dto.request.InventoryReq;
 import com.example.tracking_order.common.BaseResponse;

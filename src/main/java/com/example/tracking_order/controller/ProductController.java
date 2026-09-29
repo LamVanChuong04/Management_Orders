@@ -1,11 +1,10 @@
-package com.example.tracking_order.controler;
+package com.example.tracking_order.controller;
 
 import com.example.tracking_order.dto.request.ProductReq;
 import com.example.tracking_order.common.BaseResponse;
 import com.example.tracking_order.dto.response.ProductDetailRes;
 import com.example.tracking_order.service.IInventoryService;
 import com.example.tracking_order.service.IProductService;
-import com.example.tracking_order.service.IProductVariantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

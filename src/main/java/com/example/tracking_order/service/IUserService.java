@@ -1,7 +1,10 @@
 package com.example.tracking_order.service;
 
 import com.example.tracking_order.dto.request.ChangePassReq;
+import com.example.tracking_order.dto.request.LoginReq;
+import com.example.tracking_order.dto.request.RefreshTokenReq;
 import com.example.tracking_order.dto.request.UserReq;
+import com.example.tracking_order.dto.response.TokenRes;
 import com.example.tracking_order.dto.response.UserRes;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,4 +21,6 @@ public interface IUserService {
     Page<UserRes> getAllUsers(Pageable pageable);
     void deleteUser(UUID id);
     String changePassword(ChangePassReq req);
+    TokenRes login(LoginReq req);
+    TokenRes refreshToken(RefreshTokenReq req);
 }

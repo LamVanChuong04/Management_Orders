@@ -1,7 +1,9 @@
-package com.example.tracking_order.controler;
+package com.example.tracking_order.controller;
 
 import com.example.tracking_order.common.BaseResponse;
 import com.example.tracking_order.dto.request.ChangePassReq;
+import com.example.tracking_order.dto.request.LoginReq;
+import com.example.tracking_order.dto.request.RefreshTokenReq;
 import com.example.tracking_order.dto.request.UserReq;
 import com.example.tracking_order.dto.response.*;
 import com.example.tracking_order.enums.OrderStatus;
@@ -36,6 +38,11 @@ public class UserController {
     @PostMapping()
     public ResponseEntity<BaseResponse<UserRes>> create(@Valid @RequestBody UserReq req) {
         return new ResponseEntity<>(BaseResponse.ofSuccess(service.createUser(req)), HttpStatus.CREATED);
+    }
+    @Operation(method = "POST", summary = "Login", description = "Send a request via this API to login")
+    @PostMapping("/login")
+    public ResponseEntity<BaseResponse<TokenRes>> login(@Valid @RequestBody LoginReq req) {
+        return new ResponseEntity<>(BaseResponse.ofSuccess(service.login(req)), HttpStatus.OK);
     }
     @Operation(method = "PUT", summary = "Update user by id", description = "Send a request via this API to update user by id")
     @PutMapping("/{id}")
@@ -101,5 +108,11 @@ public class UserController {
     public ResponseEntity<BaseResponse<Integer>> getSumOrderIsCompleted(@PathVariable UUID id) {
         return new ResponseEntity<>(BaseResponse.ofSuccess(odService.getOrderIsCompleted(id)), HttpStatus.OK);
 
+    }
+
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<BaseResponse<TokenRes>> refreshToken(@Valid @RequestBody RefreshTokenReq req) {
+        return new ResponseEntity<>(BaseResponse.ofSuccess(service.refreshToken(req)), HttpStatus.OK);
     }
 }

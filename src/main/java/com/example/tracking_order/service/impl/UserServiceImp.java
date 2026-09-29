@@ -1,7 +1,10 @@
 package com.example.tracking_order.service.impl;
 
 import com.example.tracking_order.dto.request.ChangePassReq;
+import com.example.tracking_order.dto.request.LoginReq;
+import com.example.tracking_order.dto.request.RefreshTokenReq;
 import com.example.tracking_order.dto.request.UserReq;
+import com.example.tracking_order.dto.response.TokenRes;
 import com.example.tracking_order.dto.response.UserRes;
 import com.example.tracking_order.entity.UserEntity;
 import com.example.tracking_order.enums.Role;
@@ -12,9 +15,16 @@ import com.example.tracking_order.repository.UserRepository;
 import com.example.tracking_order.service.IUserService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +38,9 @@ public class UserServiceImp implements IUserService {
     private UserRepository userRepository;
     private UserMapper mapper;
     private PasswordEncoder encoder;
+    private JwtServiceImp jwtService;
+    private AuthenticationManager authenticationManager;
+    private UserDetailsService userDetailsService;
 
     @Override
     @Transactional
@@ -92,6 +105,38 @@ public class UserServiceImp implements IUserService {
         user.setPassword(encoder.encode(req.getNewPassword()));
         userRepository.save(user);
         return "Changed password successfully";
+    }
+
+    @Override
+    public TokenRes login(LoginReq req) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        req.getUsername(),
+                        req.getPassword()
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String accessToken = jwtService.generateAccessToken(authentication);
+        String refreshToken = jwtService.generateRefreshToken(authentication);
+
+        return new TokenRes(accessToken, refreshToken);
+    }
+
+    @Override
+    public TokenRes refreshToken(RefreshTokenReq req) {
+        if(!jwtService.validateToken(req.getRefreshToken())) {
+            throw new BusinessException("Invalid token");
+        }
+        String username = jwtService.getUsernameFromToken(req.getRefreshToken());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+        String accessToken = jwtService.generateAccessToken(authToken);
+        //String refreshToken = jwtService.generateRefreshToken(authToken);
+
+        return new TokenRes(accessToken, req.getRefreshToken());
     }
 
 }

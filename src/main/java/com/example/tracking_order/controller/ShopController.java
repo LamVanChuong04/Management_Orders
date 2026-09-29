@@ -1,4 +1,4 @@
-package com.example.tracking_order.controler;
+package com.example.tracking_order.controller;
 
 import com.example.tracking_order.common.BaseResponse;
 import com.example.tracking_order.dto.request.ShopReq;
@@ -6,7 +6,6 @@ import com.example.tracking_order.dto.response.DiscountRes;
 import com.example.tracking_order.dto.response.ShopRes;
 import com.example.tracking_order.service.IDiscountService;
 import com.example.tracking_order.service.IShopService;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
